@@ -101,8 +101,16 @@ Vertex* Edge::getOrigin() const {
     return this->origin;
 }
 
+Edge* Edge::getReverse() const {
+    return this->reverse;
+}
+
 double Edge::getFlow() const {
     return this->flow;
+}
+
+void Edge::setReverse(Edge* reverse) {
+    this->reverse = reverse;
 }
 
 void Edge::setFlow(double flow) {

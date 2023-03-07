@@ -21,10 +21,12 @@ private:
      * @brief If vertex was visited
      */
     bool visited = false;
+    
     /**
      * @brief If vertex is processing (used for DAGs)
      */
     bool processing = false;
+    
     /**
      * @brief Vertex indegree (used for topsort)
      */
@@ -154,14 +156,21 @@ private:
      * @brief Destination vertex
      */
     Vertex* dest;
+    
     /**
      * @brief Weight of the edge
      */
     double weight;
+    
     /**
      * @brief Origin vertex
      */
     Vertex* origin;
+
+    /**
+     * @brief Reverse edge (default is nullptr)
+     */
+    Edge* reverse = nullptr;
 
     /**
      * @brief Flow of the edge
@@ -193,16 +202,30 @@ public:
     Vertex* getOrigin() const;
 
     /**
+     * @brief Get reverse edge
+     * 
+     * @return Edge* reverse
+     */
+    Edge* getReverse() const;
+
+    /**
      * @brief Get the edge's flow
      * 
-     * @return double 
+     * @return double Edge flow
      */
     double getFlow() const;
 
     /**
+     * @brief Set reverse edge
+     * 
+     * @param reverse reverse
+     */
+    void setReverse(Edge* reverse);
+
+    /**
      * @brief Set the flow
      * 
-     * @param flow
+     * @param flow Edge flow
      */
     void setFlow(double flow);
 };
