@@ -3,7 +3,11 @@ project(feup_da1)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(feup_da1 src/main.cpp)
+include_directories(feup_da1 "${CMAKE_SOURCE_DIR}/include")
+
+file(GLOB SRC_FILES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cpp")
+
+add_executable(feup_da1 ${SRC_FILES})
 
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
