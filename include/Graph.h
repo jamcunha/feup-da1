@@ -5,6 +5,9 @@
 
 #include <vector>
 
+/**
+ * @brief Railway network
+ */
 class Graph {
 private:
     /**

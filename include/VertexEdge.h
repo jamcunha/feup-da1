@@ -7,6 +7,9 @@
 
 class Edge;
 
+/**
+ * @brief Represents a station in the railway network 
+ */
 class Vertex {
 private:
     /**
@@ -152,6 +155,9 @@ public:
     bool removeEdge(const Station& destStation);
 };
 
+/**
+ * @brief Represents the path from a station to another in the railway network 
+ */
 class Edge {
 private:
     /**
@@ -160,7 +166,7 @@ private:
     Vertex* _dest;
     
     /**
-     * @brief Weight of the edge
+     * @brief Represents number of trains that can be simultainiously be in the edge
      */
     double _weight;
     
@@ -175,7 +181,7 @@ private:
     Edge* _reverse = nullptr;
 
     /**
-     * @brief Flow of the edge
+     * @brief Represent number of trains that are simultainiously in the edge
      */
     double _flow;
 
