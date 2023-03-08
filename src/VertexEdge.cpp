@@ -2,74 +2,74 @@
 
 /*===== Vertex =====*/
 
-Vertex::Vertex(int id): id(id) {}
+Vertex::Vertex(const Station& station): _station(station) {}
 
-int Vertex::getId() const {
-    return this->id;
+const Station& Vertex::getStation() const {
+    return this->_station;
 }
 
 std::vector<Edge *> Vertex::getAdj() const {
-    return this->adj;
+    return this->_adj;
 }
 
 bool Vertex::isVisited() const {
-    return this->visited;
+    return this->_visited;
 }
 
 bool Vertex::isProcessing() const {
-    return this->processing;
+    return this->_processing;
 }
 
 unsigned int Vertex::getIndegree() const {
-    return this->indegree;
+    return this->_indegree;
 }
 
 Edge* Vertex::getPath() const {
-    return this->path;
+    return this->_path;
 }
 
 std::vector<Edge *> Vertex::getIncomming() const {
-    return this->incomming;
+    return this->_incomming;
 }
 
-void Vertex::setId(int id) {
-    this->id = id;
+void Vertex::setStation(const Station& station) {
+    this->_station = station;
 }
 
 void Vertex::setVisited(bool visited) {
-    this->visited = visited;
+    this->_visited = visited;
 }
 
 void Vertex::setProcessing(bool processing) {
-    this->processing = processing;
+    this->_processing = processing;
 }
 
 void Vertex::setIndegree(unsigned int indegree) {
-    this->indegree = indegree;
+    this->_indegree = indegree;
 }
 
 void Vertex::setPath(Edge* path) {
-    this->path = path;
+    this->_path = path;
 }
 
 Edge* Vertex::addEdge(Vertex* dest, double weight) {
     auto newEdge = new Edge(this, dest, weight);
-    adj.push_back(newEdge);
-    dest->incomming.push_back(newEdge);
+    _adj.push_back(newEdge);
+    dest->_incomming.push_back(newEdge);
     return newEdge;
 }
 
-bool Vertex::removeEdge(int destId) {
+bool Vertex::removeEdge(const Station& destStation) {
     bool edgeRemoved = false;
-    for (auto it = adj.begin(); it != adj.end();) {
+    for (auto it = _adj.begin(); it != _adj.end();) {
         Edge* edge = *it;
         Vertex* dest = edge->getDest();
-        if (dest->getId() == destId) {
-            it = adj.erase(it);
+        if (dest->getStation() == destStation) {
+            it = _adj.erase(it);
 
-            for (auto it2 = dest->incomming.begin(); it2 != dest->incomming.end();) {
-                if ((*it2)->getOrigin()->getId() == id) {
-                    it2 = dest->incomming.erase(it2);
+            for (auto it2 = dest->_incomming.begin(); it2 != dest->_incomming.end();) {
+                if ((*it2)->getOrigin()->getStation() == _station) {
+                    it2 = dest->_incomming.erase(it2);
                 } else {
                     it2++;
                 }
@@ -87,32 +87,32 @@ bool Vertex::removeEdge(int destId) {
 
 /*===== Edge =====*/
 
-Edge::Edge(Vertex* origin, Vertex* dest, double weight): origin(origin), dest(dest), weight(weight) {}
+Edge::Edge(Vertex* origin, Vertex* dest, double weight): _origin(origin), _dest(dest), _weight(weight) {}
 
 Vertex* Edge::getDest() const {
-    return this->dest;
+    return this->_dest;
 }
 
 double Edge::getWeight() const {
-    return this->weight;
+    return this->_weight;
 }
 
 Vertex* Edge::getOrigin() const {
-    return this->origin;
+    return this->_origin;
 }
 
 Edge* Edge::getReverse() const {
-    return this->reverse;
+    return this->_reverse;
 }
 
 double Edge::getFlow() const {
-    return this->flow;
+    return this->_flow;
 }
 
 void Edge::setReverse(Edge* reverse) {
-    this->reverse = reverse;
+    this->_reverse = reverse;
 }
 
 void Edge::setFlow(double flow) {
-    this->flow = flow;
+    this->_flow = flow;
 }

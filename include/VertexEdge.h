@@ -3,54 +3,56 @@
 
 #include <vector>
 
+#include "Station.h"
+
 class Edge;
 
 class Vertex {
 private:
     /**
-     * @brief Vertex id
+     * @brief Vertex station
      */
-    int id;
+    Station _station;
 
     /**
      * @brief Adjacency list of edges
      */
-    std::vector<Edge *> adj;
+    std::vector<Edge *> _adj;
 
     /**
      * @brief If vertex was visited
      */
-    bool visited = false;
+    bool _visited = false;
     
     /**
      * @brief If vertex is processing (used for DAGs)
      */
-    bool processing = false;
+    bool _processing = false;
     
     /**
      * @brief Vertex indegree (used for topsort)
      */
-    unsigned int indegree;
+    unsigned int _indegree;
 
     /**
      * @brief Path traveled until this vertex
      */
-    Edge* path = nullptr;
+    Edge* _path = nullptr;
 
     /**
      * @brief Incomming edges to the vertex
      */
-    std::vector<Edge *> incomming;
+    std::vector<Edge *> _incomming;
 
 public:
-    Vertex(int id);
+    Vertex(const Station& station);
 
     /**
-     * @brief Get the vertex id
+     * @brief Get the vertex station
      * 
-     * @return int id
+     * @return Station station
      */
-    int getId() const;
+    const Station& getStation() const;
 
     /**
      * @brief Get the adjacency list of edges
@@ -97,11 +99,11 @@ public:
     std::vector<Edge *> getIncomming() const;
 
     /**
-     * @brief Set vertex id
+     * @brief Set vertex station
      * 
-     * @param id 
+     * @param Station station
      */
-    void setId(int id);
+    void setStation(const Station& station);
 
     /**
      * @brief Set vertex to visited/unvisited
@@ -143,11 +145,11 @@ public:
     /**
      * @brief Remove an edge with the vertex as origin
      * 
-     * @param destId Id of the destination vertex
+     * @param destStation Station of the destination vertex
      * @return true Vertex was removed
      * @return false Vertex does not exist
      */
-    bool removeEdge(int destId);
+    bool removeEdge(const Station& destStation);
 };
 
 class Edge {
@@ -155,27 +157,27 @@ private:
     /**
      * @brief Destination vertex
      */
-    Vertex* dest;
+    Vertex* _dest;
     
     /**
      * @brief Weight of the edge
      */
-    double weight;
+    double _weight;
     
     /**
      * @brief Origin vertex
      */
-    Vertex* origin;
+    Vertex* _origin;
 
     /**
      * @brief Reverse edge (default is nullptr)
      */
-    Edge* reverse = nullptr;
+    Edge* _reverse = nullptr;
 
     /**
      * @brief Flow of the edge
      */
-    double flow;
+    double _flow;
 
 public:
     Edge(Vertex* origin, Vertex* dest, double weight);
