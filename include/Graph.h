@@ -39,10 +39,11 @@ public:
      * @param source Source vertex
      * @param dest Destination Vertex
      * @param weight Edge weight
+     * @param service Edge service
      * @return true Edge was added
      * @return false Source or destination vertex does not exist
      */
-    bool addEdge(const std::string& source, const std::string& dest, double weight);
+    bool addEdge(const std::string& source, const std::string& dest, double weight, const std::string& service);
 
     /**
      * @brief Add a edge from source to destination vertex and another edge the other way
@@ -50,10 +51,11 @@ public:
      * @param source Source vertex
      * @param dest Destination Vertex
      * @param weight Edge weight
+     * @param service Edge service
      * @return true Edge was added
      * @return false Source or destination vertex does not exist
      */
-    bool addBidirectionalEdge(const std::string& source, const std::string& dest, double weight);
+    bool addBidirectionalEdge(const std::string& source, const std::string& dest, double weight, const std::string& service);
 
     /**
      * @brief Get graph's number of vertexes

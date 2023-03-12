@@ -19,26 +19,26 @@ bool Graph::addVertex(const Station& station) {
     return true;
 }
 
-bool Graph::addEdge(const std::string& source, const std::string& dest, double weight) {
+bool Graph::addEdge(const std::string& source, const std::string& dest, double weight, const std::string& service) {
     auto v1 = findVertex(source);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr) {
         return false;
     }
 
-    v1->addEdge(v2, weight);
+    v1->addEdge(v2, weight, service);
     return true;
 }
 
-bool Graph::addBidirectionalEdge(const std::string& source, const std::string& dest, double weight) {
+bool Graph::addBidirectionalEdge(const std::string& source, const std::string& dest, double weight, const std::string& service) {
     auto v1 = findVertex(source);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr) {
         return false;
     }
 
-    auto e1 = v1->addEdge(v2, weight);
-    auto e2 = v2->addEdge(v1, weight);
+    auto e1 = v1->addEdge(v2, weight, service);
+    auto e2 = v2->addEdge(v1, weight, service);
 
     e1->setReverse(e2);
     e2->setReverse(e1);
