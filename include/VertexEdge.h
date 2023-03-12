@@ -1,9 +1,9 @@
 #ifndef FEUP_DA1_VERTEXEDGE_H
 #define FEUP_DA1_VERTEXEDGE_H
 
-#include <vector>
-
 #include "Station.h"
+
+#include <vector>
 
 class Edge;
 
