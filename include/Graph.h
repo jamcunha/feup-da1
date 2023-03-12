@@ -5,6 +5,9 @@
 
 #include <vector>
 
+/**
+ * @brief Railway network
+ */
 class Graph {
 private:
     /**
@@ -16,19 +19,19 @@ public:
     /**
      * @brief Find a vertex in the graph with the given id, if it does not exists return nullptr
      * 
-     * @param id Vertex id
+     * @param stationName Vertex stationName
      * @return Vertex* vertex
      */
-    Vertex* findVertex(const int &id) const;
+    Vertex* findVertex(const std::string& stationName) const;
 
     /**
      * @brief Add a vertex to the graph
      * 
-     * @param id Vertex id
+     * @param station Vertex station
      * @return true Vertex was added
      * @return false Vertex with that id already exists
      */
-    bool addVertex(const int &id);
+    bool addVertex(const Station& station);
 
     /**
      * @brief Add a edge to a vertex of the graph
@@ -36,10 +39,11 @@ public:
      * @param source Source vertex
      * @param dest Destination Vertex
      * @param weight Edge weight
+     * @param service Edge service
      * @return true Edge was added
      * @return false Source or destination vertex does not exist
      */
-    bool addEdge(const int &source, const int &dest, double weight);
+    bool addEdge(const std::string& source, const std::string& dest, double weight, const std::string& service);
 
     /**
      * @brief Add a edge from source to destination vertex and another edge the other way
@@ -47,10 +51,11 @@ public:
      * @param source Source vertex
      * @param dest Destination Vertex
      * @param weight Edge weight
+     * @param service Edge service
      * @return true Edge was added
      * @return false Source or destination vertex does not exist
      */
-    bool addBidirectionalEdge(const int &source, const int &dest, double weight);
+    bool addBidirectionalEdge(const std::string& source, const std::string& dest, double weight, const std::string& service);
 
     /**
      * @brief Get graph's number of vertexes
