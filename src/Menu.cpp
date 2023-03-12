@@ -47,7 +47,7 @@ void Menu::readData() {
         _graph.addEdge(
             station_a,
             station_b,
-            std::stod(capacity_string),
+            std::stoi(capacity_string),
             service
         );
     }

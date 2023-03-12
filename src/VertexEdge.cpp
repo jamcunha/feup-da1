@@ -52,7 +52,7 @@ void Vertex::setPath(Edge* path) {
     this->_path = path;
 }
 
-Edge* Vertex::addEdge(Vertex* dest, double weight, const std::string& service) {
+Edge* Vertex::addEdge(Vertex* dest, int weight, const std::string& service) {
     auto newEdge = new Edge(this, dest, weight, service);
     _adj.push_back(newEdge);
     dest->_incomming.push_back(newEdge);
@@ -87,14 +87,14 @@ bool Vertex::removeEdge(const Station& destStation) {
 
 /*===== Edge =====*/
 
-Edge::Edge(Vertex* origin, Vertex* dest, double weight, const std::string& service)
+Edge::Edge(Vertex* origin, Vertex* dest, int weight, const std::string& service)
     : _origin(origin), _dest(dest), _weight(weight), _service(service) {}
 
 Vertex* Edge::getDest() const {
     return this->_dest;
 }
 
-double Edge::getWeight() const {
+int Edge::getWeight() const {
     return this->_weight;
 }
 
@@ -106,7 +106,7 @@ Edge* Edge::getReverse() const {
     return this->_reverse;
 }
 
-double Edge::getFlow() const {
+int Edge::getFlow() const {
     return this->_flow;
 }
 
@@ -118,6 +118,6 @@ void Edge::setReverse(Edge* reverse) {
     this->_reverse = reverse;
 }
 
-void Edge::setFlow(double flow) {
+void Edge::setFlow(int flow) {
     this->_flow = flow;
 }
