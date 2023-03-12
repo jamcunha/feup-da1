@@ -141,9 +141,10 @@ public:
      * 
      * @param dest Destination Vertex
      * @param weight Edge weight
+     * @param service Edge service
      * @return Edge* New edge
      */
-    Edge* addEdge(Vertex* dest, double weight);
+    Edge* addEdge(Vertex* dest, double weight, const std::string& service);
 
     /**
      * @brief Remove an edge with the vertex as origin
@@ -185,8 +186,13 @@ private:
      */
     double _flow;
 
+    /**
+     * @brief Type of service of the edge
+     */
+    std::string _service;
+
 public:
-    Edge(Vertex* origin, Vertex* dest, double weight);
+    Edge(Vertex* origin, Vertex* dest, double weight, const std::string& service);
 
     /**
      * @brief Get the destination vertex
@@ -222,6 +228,13 @@ public:
      * @return double Edge flow
      */
     double getFlow() const;
+
+    /**
+     * @brief Get trip's service
+     * 
+     * @return const std::string& service
+     */
+    const std::string& getService() const;
 
     /**
      * @brief Set reverse edge
