@@ -44,10 +44,10 @@ void Menu::readData() {
         getline(ss, capacity_string, ',');
         getline(ss, service, '\n');
 
-        _graph.addEdge(
+        _graph.addBidirectionalEdge(
             station_a,
             station_b,
-            std::stoi(capacity_string),
+            std::stoi(capacity_string) / 2,
             service
         );
     }
