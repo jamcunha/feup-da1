@@ -19,7 +19,7 @@ bool Graph::addVertex(const Station& station) {
     return true;
 }
 
-bool Graph::addEdge(const std::string& source, const std::string& dest, double weight, const std::string& service) {
+bool Graph::addEdge(const std::string& source, const std::string& dest, int weight, const std::string& service) {
     auto v1 = findVertex(source);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr) {
@@ -30,7 +30,7 @@ bool Graph::addEdge(const std::string& source, const std::string& dest, double w
     return true;
 }
 
-bool Graph::addBidirectionalEdge(const std::string& source, const std::string& dest, double weight, const std::string& service) {
+bool Graph::addBidirectionalEdge(const std::string& source, const std::string& dest, int weight, const std::string& service) {
     auto v1 = findVertex(source);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr) {

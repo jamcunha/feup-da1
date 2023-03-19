@@ -43,7 +43,7 @@ public:
      * @return true Edge was added
      * @return false Source or destination vertex does not exist
      */
-    bool addEdge(const std::string& source, const std::string& dest, double weight, const std::string& service);
+    bool addEdge(const std::string& source, const std::string& dest, int weight, const std::string& service);
 
     /**
      * @brief Add a edge from source to destination vertex and another edge the other way
@@ -55,7 +55,7 @@ public:
      * @return true Edge was added
      * @return false Source or destination vertex does not exist
      */
-    bool addBidirectionalEdge(const std::string& source, const std::string& dest, double weight, const std::string& service);
+    bool addBidirectionalEdge(const std::string& source, const std::string& dest, int weight, const std::string& service);
 
     /**
      * @brief Get graph's number of vertexes

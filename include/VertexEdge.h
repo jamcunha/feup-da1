@@ -1,9 +1,9 @@
 #ifndef FEUP_DA1_VERTEXEDGE_H
 #define FEUP_DA1_VERTEXEDGE_H
 
-#include <vector>
-
 #include "Station.h"
+
+#include <vector>
 
 class Edge;
 
@@ -144,7 +144,7 @@ public:
      * @param service Edge service
      * @return Edge* New edge
      */
-    Edge* addEdge(Vertex* dest, double weight, const std::string& service);
+    Edge* addEdge(Vertex* dest, int weight, const std::string& service);
 
     /**
      * @brief Remove an edge with the vertex as origin
@@ -169,7 +169,7 @@ private:
     /**
      * @brief Represents number of trains that can be simultainiously be in the edge
      */
-    double _weight;
+    int _weight;
     
     /**
      * @brief Origin vertex
@@ -184,7 +184,7 @@ private:
     /**
      * @brief Represent number of trains that are simultainiously in the edge
      */
-    double _flow;
+    int _flow;
 
     /**
      * @brief Type of service of the edge
@@ -192,7 +192,7 @@ private:
     std::string _service;
 
 public:
-    Edge(Vertex* origin, Vertex* dest, double weight, const std::string& service);
+    Edge(Vertex* origin, Vertex* dest, int weight, const std::string& service);
 
     /**
      * @brief Get the destination vertex
@@ -204,9 +204,9 @@ public:
     /**
      * @brief Get the edge's weight
      * 
-     * @return double weight
+     * @return int weight
      */
-    double getWeight() const;
+    int getWeight() const;
 
     /**
      * @brief Get the origin vertex
@@ -225,9 +225,9 @@ public:
     /**
      * @brief Get the edge's flow
      * 
-     * @return double Edge flow
+     * @return int Edge flow
      */
-    double getFlow() const;
+    int getFlow() const;
 
     /**
      * @brief Get trip's service
@@ -248,7 +248,7 @@ public:
      * 
      * @param flow Edge flow
      */
-    void setFlow(double flow);
+    void setFlow(int flow);
 };
 
 #endif // FEUP_DA1_VERTEXEDGE_H
