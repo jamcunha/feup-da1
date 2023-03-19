@@ -1,5 +1,8 @@
 #include "Graph.h"
 
+#include <limits>
+#include <queue>
+
 Vertex* Graph::findVertex(const std::string& stationName) const {
     for (auto v: vertexSet) {
         if (v->getStation().getName() == stationName) {
@@ -46,10 +49,97 @@ bool Graph::addBidirectionalEdge(const std::string& source, const std::string& d
     return true;
 }
 
+int Graph::edmondsKarp(const std::string& source, const std::string& dest) {
+    auto s = findVertex(source);
+    auto t = findVertex(dest);
+
+    // Check if source and destination are valid
+    if (s == nullptr || t == nullptr || s == t) {
+        return -1;
+    }
+
+    // Reset the flow in the edges
+    for (auto v: vertexSet) {
+        for (auto e: v->getAdj()) {
+            e->setFlow(0);
+        }
+    }
+
+    int max_flow = 0;
+
+    while (findAugmentingPath(s, t)) {
+        int pathFlow = std::numeric_limits<int>::infinity();
+        
+        // Find the minimum flow in the path
+        for (auto v = t; v != s;) {
+            auto e = v->getPath();
+            if (e->getDest() == v) {
+                pathFlow = std::min(pathFlow, e->getWeight() - e->getFlow());
+                v = e->getOrigin();
+            } else {
+                pathFlow = std::min(pathFlow, e->getFlow());
+                v = e->getDest();
+            }
+        }
+
+        // Update the flow in the path
+        for (auto v = t; v != s;) {
+            auto e = v->getPath();
+            if (e->getDest() == v) {
+                e->setFlow(e->getFlow() + pathFlow);
+                v = e->getOrigin();
+            } else {
+                e->setFlow(e->getFlow() - pathFlow);
+                v = e->getDest();
+            }
+        }
+
+        max_flow += pathFlow;
+    }
+
+    return max_flow;
+}
+
 int Graph::getNumVertex() const {
     return this->vertexSet.size();
 }
 
 std::vector<Vertex *> Graph::getVertexSet() const {
     return this->vertexSet;
+}
+
+/* Utils */
+
+bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) {
+    for (auto v: vertexSet) {
+        v->setVisited(false);
+    }
+
+    source->setVisited(true);
+    std::queue<Vertex *> q;
+    q.push(source);
+
+    while (!q.empty() && !dest->isVisited()) {
+        auto v = q.front(); q.pop();
+
+        for (auto e: v->getAdj()) {
+            auto w = e->getDest();
+            if (!w->isVisited() && e->getFlow() < e->getWeight()) {
+                w->setVisited(true);
+                w->setPath(e);
+                q.push(w);
+            }
+        }
+
+        for (auto e: v->getIncomming()) {
+            auto w = e->getOrigin();
+            if (!w->isVisited() && e->getFlow() > 0) {
+                w->setVisited(true);
+                w->setPath(e);
+                q.push(w);
+            }
+        }
+    }
+
+    return dest->isVisited();
 }
