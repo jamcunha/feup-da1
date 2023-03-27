@@ -68,8 +68,8 @@ int Graph::edmondsKarp(const std::string& source, const std::string& dest) {
     int max_flow = 0;
 
     while (findAugmentingPath(s, t)) {
-        int pathFlow = std::numeric_limits<int>::infinity();
-        
+        int pathFlow = std::numeric_limits<int>::max();
+
         // Find the minimum flow in the path
         for (auto v = t; v != s;) {
             auto e = v->getPath();
@@ -97,7 +97,7 @@ int Graph::edmondsKarp(const std::string& source, const std::string& dest) {
         max_flow += pathFlow;
     }
 
-    return max_flow;
+    return (max_flow ? max_flow : -1);
 }
 
 int Graph::getNumVertex() const {
@@ -124,7 +124,7 @@ bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) {
 
         for (auto e: v->getAdj()) {
             auto w = e->getDest();
-            if (!w->isVisited() && e->getFlow() < e->getWeight()) {
+            if (!w->isVisited() && e->getWeight() - e->getFlow() > 0) {
                 w->setVisited(true);
                 w->setPath(e);
                 q.push(w);
