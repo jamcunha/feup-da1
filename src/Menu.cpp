@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <map>
 
 void Menu::readData() {
     std::ifstream station_input("../data/stations.csv");
@@ -81,6 +82,16 @@ void Menu::maxTrainBetweenStations() {
     utils::waitEnter();
 }
 
+void Menu::maxTrainCapacity() {
+    std::map<std::pair<std::string, std::string>, int> max_trains = _graph.getMaxTrainCapacityPairs();
+
+    for (auto it = max_trains.begin(); it != max_trains.end(); it++) {
+        std::cout << "Max number of trains between " << it->first.first << " and " << it->first.second << ": " << it->second << "\n";
+    }
+
+    utils::waitEnter();
+}
+
 void Menu::init() {
     while (true) {
         utils::clearScreen();
@@ -88,6 +99,7 @@ void Menu::init() {
         std::cout << "|        Welcome to the Railway Manager       |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 1. Max number of trains between 2 stations  |\n";
+        std::cout << "| 2. Max train capacity of the network        |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 0. Exit                                     |\n";
         std::cout << "-----------------------------------------------\n";
@@ -102,7 +114,7 @@ void Menu::init() {
                 continue;
             }
 
-            if (opt[0] >= '0' && opt[0] <= '1' ) {
+            if (opt[0] >= '0' && opt[0] <= '2' ) {
                 break;
             }
 
@@ -115,6 +127,9 @@ void Menu::init() {
                 return;
             case '1':
                 maxTrainBetweenStations();
+                break;
+            case '2':
+                maxTrainCapacity();
                 break;
             default:
                 break;

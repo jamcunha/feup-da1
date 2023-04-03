@@ -49,7 +49,7 @@ bool Graph::addBidirectionalEdge(const std::string& source, const std::string& d
     return true;
 }
 
-int Graph::edmondsKarp(const std::string& source, const std::string& dest) {
+int Graph::edmondsKarp(const std::string& source, const std::string& dest) const {
     auto s = findVertex(source);
     auto t = findVertex(dest);
 
@@ -100,6 +100,25 @@ int Graph::edmondsKarp(const std::string& source, const std::string& dest) {
     return (max_flow ? max_flow : -1);
 }
 
+std::map<std::pair<std::string, std::string>, int> Graph::getMaxTrainCapacityPairs() const {
+    std::map<std::pair<std::string, std::string>, int> max_pairs;
+    int max_num_trains = 0;
+    for (const auto &source: vertexSet) {
+        for (const auto &dest: vertexSet) {
+            int num_trains = edmondsKarp(source->getStation().getName(), dest->getStation().getName());
+            if (num_trains > max_num_trains) {
+                max_pairs.clear();
+                max_pairs[std::make_pair(source->getStation().getName(), dest->getStation().getName())] = num_trains;
+                max_num_trains = num_trains;
+            } else if (num_trains == max_num_trains && max_pairs.find(std::make_pair(dest->getStation().getName(), source->getStation().getName())) == max_pairs.end()) {
+                max_pairs[std::make_pair(source->getStation().getName(), dest->getStation().getName())] = num_trains;
+            }
+        }
+    }
+
+    return max_pairs;
+}
+
 int Graph::getNumVertex() const {
     return this->vertexSet.size();
 }
@@ -110,7 +129,7 @@ std::vector<Vertex *> Graph::getVertexSet() const {
 
 /* Utils */
 
-bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) {
+bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) const {
     for (auto v: vertexSet) {
         v->setVisited(false);
     }
