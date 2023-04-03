@@ -1,6 +1,8 @@
 #include "Menu.h"
+#include "Utils.h"
 
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -55,4 +57,67 @@ void Menu::readData() {
 
 Menu::Menu(): _graph(Graph()) {
     readData();
+}
+
+void Menu::maxTrainBetweenStations() {
+    std::string station_a, station_b;
+
+    std::cout << "Station A: ";
+    getline(std::cin, station_a);
+
+    std::cout << "Station B: ";
+    getline(std::cin, station_b);
+
+
+    int max_trains = _graph.edmondsKarp(station_a, station_b);
+
+    if (max_trains == -1) {
+        std::cout << "Invalid stations!\n";
+        utils::waitEnter();
+        return;
+    }
+
+    std::cout << "Max number of trains between " << station_a << " and " << station_b << ": " << max_trains << "\n";
+    utils::waitEnter();
+}
+
+void Menu::init() {
+    while (true) {
+        utils::clearScreen();
+        std::cout << "-----------------------------------------------\n";
+        std::cout << "|        Welcome to the Railway Manager       |\n";
+        std::cout << "|                                             |\n";
+        std::cout << "| 1. Max number of trains between 2 stations  |\n";
+        std::cout << "|                                             |\n";
+        std::cout << "| 0. Exit                                     |\n";
+        std::cout << "-----------------------------------------------\n";
+
+        std::string opt;
+        while (true) {
+            std::cout << "\nOption: ";
+            getline(std::cin, opt);
+
+            if (opt.length() != 1) {
+                std::cout << "Invalid option!\n";
+                continue;
+            }
+
+            if (opt[0] >= '0' && opt[0] <= '1' ) {
+                break;
+            }
+
+            std::cout << "Invalid option!\n";
+        }
+
+        utils::clearScreen();
+        switch(opt[0]) {
+            case '0':
+                return;
+            case '1':
+                maxTrainBetweenStations();
+                break;
+            default:
+                break;
+        }
+    }
 }

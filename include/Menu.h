@@ -9,6 +9,9 @@ private:
 
     void readData();
 
+    /* Basic Service Metrics */
+    void maxTrainBetweenStations();
+
 public:
     Menu();
 
