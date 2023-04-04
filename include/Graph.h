@@ -4,7 +4,6 @@
 #include "VertexEdge.h"
 
 #include <vector>
-#include <map>
 
 /**
  * @brief Railway network
@@ -79,11 +78,12 @@ public:
     int edmondsKarp(const std::string& source, const std::string& dest) const;
 
     /**
-     * @brief Get the maximum number of trains that can simultaneously travel between two stations
+     * @brief Get the pair of stations that require the maximum number of trains to travel between them
      * 
-     * @return std::map<std::pair<std::string, std::string>, int> Map of pairs of stations and the maximum number of trains that can simultaneously travel between them
+     * @return std::vector<std::pair<std::pair<std::string, std::string>, int>> Vector of pairs of stations and the maximum number
+     * of trains that can simultaneously travel between them
      */
-    std::map<std::pair<std::string, std::string>, int> getMaxTrainCapacityPairs() const;
+    std::vector<std::pair<std::pair<std::string, std::string>, int>> getMaxTrainCapacityPairs() const;
 
     /**
      * @brief Get graph's number of vertexes

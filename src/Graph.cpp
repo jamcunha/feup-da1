@@ -101,9 +101,8 @@ int Graph::edmondsKarp(const std::string& source, const std::string& dest) const
     return (max_flow ? max_flow : -1);
 }
 
-// TODO: use vector instead of map for better time complexity (and maybe better performance)
-std::map<std::pair<std::string, std::string>, int> Graph::getMaxTrainCapacityPairs() const {
-    std::map<std::pair<std::string, std::string>, int> max_pairs;
+std::vector<std::pair<std::pair<std::string, std::string>, int>> Graph::getMaxTrainCapacityPairs() const {
+    std::vector<std::pair<std::pair<std::string, std::string>, int>> max_pairs;
     std::unordered_map<std::string, int> memo_max_flow; // Memoization of max flow between two stations
     int max_num_trains = 0;
 
@@ -124,10 +123,10 @@ std::map<std::pair<std::string, std::string>, int> Graph::getMaxTrainCapacityPai
 
             if (num_trains > max_num_trains) {
                 max_pairs.clear();
-                max_pairs[std::make_pair(source_name, dest_name)] = num_trains;
+                max_pairs.push_back(std::make_pair(std::make_pair(source_name, dest_name), num_trains));
                 max_num_trains = num_trains;
             } else if (num_trains == max_num_trains) {
-                max_pairs[std::make_pair(source_name, dest_name)] = num_trains;
+                max_pairs.push_back(std::make_pair(std::make_pair(source_name, dest_name), num_trains));
             }
         }
     }

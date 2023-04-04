@@ -83,10 +83,10 @@ void Menu::maxTrainBetweenStations() {
 }
 
 void Menu::maxTrainCapacity() {
-    std::map<std::pair<std::string, std::string>, int> max_trains = _graph.getMaxTrainCapacityPairs();
+    std::vector<std::pair<std::pair<std::string, std::string>, int>> max_trains = _graph.getMaxTrainCapacityPairs();
 
-    for (auto it = max_trains.begin(); it != max_trains.end(); it++) {
-        std::cout << "Max number of trains between " << it->first.first << " and " << it->first.second << ": " << it->second << "\n";
+    for (const auto& pair : max_trains) {
+        std::cout << "Max number of trains between " << pair.first.first << " and " << pair.first.second << ": " << pair.second << "\n";
     }
 
     utils::waitEnter();
