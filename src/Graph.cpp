@@ -23,6 +23,28 @@ bool Graph::addVertex(const Station& station) {
     return true;
 }
 
+bool Graph::removeVertex(const std::string& station_name) {
+    Vertex* v = findVertex(station_name);
+    if (v == nullptr) {
+        return false;
+    }
+    
+    for (auto e : v->getAdj()) {
+        auto w = e->getDest();
+        w->removeEdge(v->getStation());
+    }
+    
+    for (auto it = vertexSet.begin(); it != vertexSet.end(); it++) {
+        if ((*it)->getStation().getName() == station_name){
+            vertexSet.erase(it);
+            break;
+        }
+    }
+
+    delete v;
+    return true;
+}
+
 bool Graph::addEdge(const std::string& source, const std::string& dest, int weight, const std::string& service) {
     auto v1 = findVertex(source);
     auto v2 = findVertex(dest);
@@ -177,3 +199,4 @@ bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) const {
 
     return dest->isVisited();
 }
+

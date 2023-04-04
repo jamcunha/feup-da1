@@ -5,7 +5,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <map>
+#include <vector>
+#include <limits>
+
 
 void Menu::readData() {
     std::ifstream station_input("../data/stations.csv");
@@ -60,6 +62,34 @@ Menu::Menu(): _graph(Graph()) {
     readData();
 }
 
+void Menu::maxTrainArrivingStation() {
+    std::string station_name;
+    std::cout << "Enter the station: ";
+    getline(std::cin, station_name);
+
+    Vertex* target = _graph.findVertex(station_name);
+    if (target == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
+
+    Station super = Station("super","","","","");
+    _graph.addVertex(super);
+
+    for (Vertex* v : _graph.getVertexSet()) {
+        if (v->getAdj().size() == 1 && _graph.findAugmentingPath(v, target)){
+            _graph.addBidirectionalEdge(super.getName(),v->getStation().getName(),std::numeric_limits<int>::max(),"");
+        }
+    }
+
+    int value = _graph.edmondsKarp(super.getName(),station_name);
+    _graph.removeVertex("super");
+    std::cout << "The maximum number of trains arriving at the same time at " << station_name<< " is : " << value << "\n";
+
+    utils::waitEnter();
+}
+
 void Menu::maxTrainBetweenStations() {
     std::string station_a, station_b;
 
@@ -68,6 +98,7 @@ void Menu::maxTrainBetweenStations() {
 
     std::cout << "Station B: ";
     getline(std::cin, station_b);
+
 
 
     int max_trains = _graph.edmondsKarp(station_a, station_b);
@@ -100,6 +131,7 @@ void Menu::init() {
         std::cout << "|                                             |\n";
         std::cout << "| 1. Max number of trains between 2 stations  |\n";
         std::cout << "| 2. Max train capacity of the network        |\n";
+        std::cout << "| 3. Max number of arriving at a station      |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 0. Exit                                     |\n";
         std::cout << "-----------------------------------------------\n";
@@ -114,7 +146,7 @@ void Menu::init() {
                 continue;
             }
 
-            if (opt[0] >= '0' && opt[0] <= '2' ) {
+            if (opt[0] >= '0' && opt[0] <= '3' ) {
                 break;
             }
 
@@ -130,6 +162,9 @@ void Menu::init() {
                 break;
             case '2':
                 maxTrainCapacity();
+                break;
+            case '3':
+                maxTrainArrivingStation();
                 break;
             default:
                 break;

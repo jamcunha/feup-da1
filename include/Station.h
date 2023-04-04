@@ -41,7 +41,7 @@ public:
         const std::string& township,
         const std::string& line
     );
-
+    Station();
     /**
      * @brief Get the station name
      * 
