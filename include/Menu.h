@@ -13,6 +13,7 @@ private:
     void maxTrainBetweenStations();
     void maxTrainArrivingStation();
     void maxTrainCapacity();
+    void topKMunicipalitiesAndDistricts();
 
 public:
     Menu();

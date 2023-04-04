@@ -131,6 +131,33 @@ void Menu::maxTrainCapacity() {
     utils::waitEnter();
 }
 
+void Menu::topKMunicipalitiesAndDistricts() {
+    int k;
+
+    std::cout << "Insert the number of minicipalities and districts you want to be shown: ";
+    std::cin >> k;
+    std::cin.ignore(); // ignore '\n' for waitEnter()
+
+    utils::clearScreen();
+
+    std::vector<std::string> top_k_municipalities;
+    std::vector<std::string> top_k_districts;
+
+    _graph.findTopMunicipalitiesAndDistricts(k, top_k_municipalities, top_k_districts);
+
+    std::cout << "Top " << k << " municipalities:\n";
+    for (auto it = top_k_municipalities.begin(); it != top_k_municipalities.end(); it++) {
+        std::cout << *it << "\n";
+    }
+
+    std::cout << "\nTop " << k << " districts:\n";
+    for (auto it = top_k_districts.begin(); it != top_k_districts.end(); it++) {
+        std::cout << *it << "\n";
+    }
+
+    utils::waitEnter();
+}
+
 void Menu::init() {
     while (true) {
         utils::clearScreen();
@@ -139,7 +166,8 @@ void Menu::init() {
         std::cout << "|                                             |\n";
         std::cout << "| 1. Max number of trains between 2 stations  |\n";
         std::cout << "| 2. Max train capacity of the network        |\n";
-        std::cout << "| 3. Max number of arriving at a station      |\n";
+        std::cout << "| 3. Top k municipalities and districts       |\n";
+        std::cout << "| 4. Max number of arriving at a station      |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 0. Exit                                     |\n";
         std::cout << "-----------------------------------------------\n";
@@ -154,7 +182,7 @@ void Menu::init() {
                 continue;
             }
 
-            if (opt[0] >= '0' && opt[0] <= '3' ) {
+            if (opt[0] >= '0' && opt[0] <= '4' ) {
                 break;
             }
 
@@ -172,6 +200,9 @@ void Menu::init() {
                 maxTrainCapacity();
                 break;
             case '3':
+                topKMunicipalitiesAndDistricts();
+                break;
+            case '4':
                 maxTrainArrivingStation();
                 break;
             default:

@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <queue>
+#include <map>
 #include <unordered_map>
 
 Vertex* Graph::findVertex(const std::string& stationName) const {
@@ -155,6 +156,71 @@ std::vector<std::pair<std::pair<std::string, std::string>, int>> Graph::getMaxTr
     }
 
     return max_pairs;
+}
+
+// TODO: try to use a vector instead of a map and sort without using priority queue (analyse complexity)
+void Graph::findTopMunicipalitiesAndDistricts(
+    int k,
+    std::vector<std::string> &municipalities,
+    std::vector<std::string> &districts
+) const {
+    std::map<std::string, int> municipalitiesFlow;
+    std::map<std::string, int> districtsFlow;
+
+    // Find the highest flow for each municipality and district
+    for (const auto &source: vertexSet) {
+        for (const auto &dest: vertexSet) {
+            int num_trains = edmondsKarp(source->getStation().getName(), dest->getStation().getName());
+            if (num_trains != -1) {
+                auto municipality = source->getStation().getMunicipality();
+                auto district = source->getStation().getDistrict();
+
+                if (municipalitiesFlow.find(municipality) == municipalitiesFlow.end()) {
+                    municipalitiesFlow[municipality] = 0;
+                }
+                if (districtsFlow.find(district) == districtsFlow.end()) {
+                    districtsFlow[district] = 0;
+                }
+                
+                municipalitiesFlow[municipality] += num_trains;
+                districtsFlow[district] += num_trains;
+            }
+        }
+    }
+
+    // Find the top k municipalities and districts
+    auto cmp = [](const std::pair<std::string, int> &a, const std::pair<std::string, int> &b) {
+        return a.second > b.second;
+    };
+    std::priority_queue<
+        std::pair<std::string, int>,
+        std::vector<std::pair<std::string, int>>,
+        decltype(cmp)
+    > pq(cmp);
+
+    for (const auto &municipality: municipalitiesFlow) {
+        pq.push(municipality);
+        if (pq.size() > k) {
+            pq.pop();
+        }
+    }
+
+    while (!pq.empty()) {
+        municipalities.insert(municipalities.begin(), pq.top().first);
+        pq.pop();
+    }
+
+    for (const auto &district: districtsFlow) {
+        pq.push(district);
+        if (pq.size() > k) {
+            pq.pop();
+        }
+    }
+
+    while (!pq.empty()) {
+        districts.insert(districts.begin(), pq.top().first);
+        pq.pop();
+    }
 }
 
 int Graph::getNumVertex() const {
