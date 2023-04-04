@@ -2,7 +2,6 @@
 
 #include <limits>
 #include <queue>
-#include <map>
 #include <unordered_map>
 
 Vertex* Graph::findVertex(const std::string& stationName) const {
@@ -164,13 +163,26 @@ void Graph::findTopMunicipalitiesAndDistricts(
     std::vector<std::string> &municipalities,
     std::vector<std::string> &districts
 ) const {
-    std::map<std::string, int> municipalitiesFlow;
-    std::map<std::string, int> districtsFlow;
+    std::unordered_map<std::string, int> municipalitiesFlow;
+    std::unordered_map<std::string, int> districtsFlow;
+    std::unordered_map<std::string, int> memo_max_flow; // Memoization of max flow between two stations
 
     // Find the highest flow for each municipality and district
     for (const auto &source: vertexSet) {
         for (const auto &dest: vertexSet) {
-            int num_trains = edmondsKarp(source->getStation().getName(), dest->getStation().getName());
+            std::string source_name = source->getStation().getName();
+            std::string dest_name = dest->getStation().getName();
+            int num_trains = -1;
+
+            if (memo_max_flow.find(source_name + dest_name) != memo_max_flow.end()) {
+                num_trains = memo_max_flow[source_name + dest_name];
+            } else {
+                num_trains = edmondsKarp(source_name, dest_name);
+
+                memo_max_flow[source_name + dest_name] = num_trains;
+                memo_max_flow[dest_name + source_name] = num_trains;
+            }
+
             if (num_trains != -1) {
                 auto municipality = source->getStation().getMunicipality();
                 auto district = source->getStation().getDistrict();
