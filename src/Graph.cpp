@@ -22,22 +22,26 @@ bool Graph::addVertex(const Station& station) {
     return true;
 }
 
-bool Graph::removeVertex(const Station& station) {
-    Vertex* v1 = findVertex(station.getName());
-    if (v1 == nullptr) {
+bool Graph::removeVertex(const std::string& station_name) {
+    Vertex* v = findVertex(station_name);
+    if (v == nullptr) {
         return false;
     }
-    for (auto e : v1->getAdj()){
-        Vertex* v2 = findVertex(e->getDest()->getStation().getName());
-        v2->removeEdge(v1->getStation());
+    
+    for (auto e : v->getAdj()) {
+        auto w = e->getDest();
+        w->removeEdge(v->getStation());
     }
-    for (auto v = vertexSet.begin(); v!=vertexSet.end(); v++){
-        if ((*v)->getStation()==station){
-            vertexSet.erase(v);
+    
+    for (auto it = vertexSet.begin(); it != vertexSet.end(); it++) {
+        if ((*it)->getStation().getName() == station_name){
+            vertexSet.erase(it);
             break;
         }
     }
-    delete v1;
+
+    delete v;
+    return true;
 }
 
 bool Graph::addEdge(const std::string& source, const std::string& dest, int weight, const std::string& service) {

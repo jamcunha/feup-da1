@@ -65,18 +65,24 @@ void Menu::maxTrainArrivingStation() {
     std::string station;
     std::cout << "Enter the station: ";
     getline(std::cin, station);
+
     Vertex* target = _graph.findVertex(station);
     std::vector<Vertex*> vertexSet = _graph.getVertexSet();
+
     Station super = Station("super","","","","");
     _graph.addVertex(super);
+
     for (Vertex* v : vertexSet) {
         if (v->getAdj().size() == 1 && _graph.findAugmentingPath(v, target)){
             _graph.addBidirectionalEdge(super.getName(),v->getStation().getName(),std::numeric_limits<int>::max(),"");
         }
     }
+
     int value = _graph.edmondsKarp(super.getName(),station);
-    _graph.removeVertex(super);
+    _graph.removeVertex("super");
     std::cout << "The maximum number of trains arriving at the same time at " << station<< " is : " << value << "\n";
+
+    utils::waitEnter();
 }
 
 void Menu::maxTrainBetweenStations() {

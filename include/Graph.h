@@ -15,16 +15,6 @@ private:
      */
     std::vector<Vertex *> vertexSet;
 
-    /**
-     * @brief Find an augmenting path in the graph using BFS
-     * 
-     * @param source Source vertex
-     * @param dest Destination Vertex
-     * @return true Found augmenting path
-     * @return false No augmenting path
-     */
-
-
 public:
     /**
      * @brief Find a vertex in the graph with the given id, if it does not exists return nullptr
@@ -43,7 +33,14 @@ public:
      */
     bool addVertex(const Station& station);
 
-    bool removeVertex(const Station& station);
+    /**
+     * @brief Remove a vertex from the graph
+     * 
+     * @param station_name Name of the station to remove
+     * @return true Vertex was removed
+     * @return false Vertex was not found
+     */
+    bool removeVertex(const std::string& station_name);
 
     /**
      * @brief Add a edge to a vertex of the graph
@@ -70,6 +67,16 @@ public:
     bool addBidirectionalEdge(const std::string& source, const std::string& dest, int weight, const std::string& service);
 
     /**
+     * @brief Find an augmenting path in the graph using BFS
+     * 
+     * @param source Source vertex
+     * @param dest Destination Vertex
+     * @return true Found augmenting path
+     * @return false No augmenting path
+     */
+    bool findAugmentingPath(Vertex *source, Vertex *dest);
+
+    /**
      * @brief Find the shortest path between source and destination vertex using Edmonds-Karp algorithm
      * Used to calculate the maximum number of trains that can simultaneously travel between two stations
      * 
@@ -92,8 +99,6 @@ public:
      * @return std::vector<Vertex *> vertexSet
      */
     std::vector<Vertex *> getVertexSet() const;
-
-    bool findAugmentingPath(Vertex *source, Vertex *dest);
 };
 
 #endif // FEUP_DA1_GRAPH_H
