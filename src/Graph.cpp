@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <queue>
+#include <vector>
 
 Vertex* Graph::findVertex(const std::string& stationName) const {
     for (auto v: vertexSet) {
@@ -22,13 +23,30 @@ bool Graph::addVertex(const Station& station) {
     return true;
 }
 
+bool Graph::removeVertex(const Station& station) {
+    Vertex* v1 = findVertex(station.getName());
+    if (v1 == nullptr) {
+        return false;
+    }
+    for (auto e : v1->getAdj()){
+        Vertex* v2 = findVertex(e->getDest()->getStation().getName());
+        v2->removeEdge(v1->getStation());
+    }
+    for (auto v = vertexSet.begin(); v!=vertexSet.end(); v++){
+        if ((*v)->getStation()==station){
+            vertexSet.erase(v);
+            break;
+        }
+    }
+    delete v1;
+}
+
 bool Graph::addEdge(const std::string& source, const std::string& dest, int weight, const std::string& service) {
     auto v1 = findVertex(source);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr) {
         return false;
     }
-
     v1->addEdge(v2, weight, service);
     return true;
 }
@@ -45,7 +63,6 @@ bool Graph::addBidirectionalEdge(const std::string& source, const std::string& d
 
     e1->setReverse(e2);
     e2->setReverse(e1);
-
     return true;
 }
 
@@ -143,3 +160,4 @@ bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) {
 
     return dest->isVisited();
 }
+

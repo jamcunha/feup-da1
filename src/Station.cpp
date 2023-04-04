@@ -1,5 +1,7 @@
 #include "Station.h"
 
+Station::Station(){}
+
 Station::Station(
     const std::string& name,
     const std::string& district,

@@ -23,7 +23,7 @@ private:
      * @return true Found augmenting path
      * @return false No augmenting path
      */
-    bool findAugmentingPath(Vertex *source, Vertex *dest);
+
 
 public:
     /**
@@ -42,6 +42,8 @@ public:
      * @return false Vertex with that id already exists
      */
     bool addVertex(const Station& station);
+
+    bool removeVertex(const Station& station);
 
     /**
      * @brief Add a edge to a vertex of the graph
@@ -90,6 +92,8 @@ public:
      * @return std::vector<Vertex *> vertexSet
      */
     std::vector<Vertex *> getVertexSet() const;
+
+    bool findAugmentingPath(Vertex *source, Vertex *dest);
 };
 
 #endif // FEUP_DA1_GRAPH_H
