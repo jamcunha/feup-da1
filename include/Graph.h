@@ -75,7 +75,7 @@ public:
      * @return true Found augmenting path
      * @return false No augmenting path
      */
-    bool findAugmentingPath(Vertex *source, Vertex *dest);
+    bool findAugmentingPath(Vertex *source, Vertex *dest) const;
 
     /**
      * @brief Find the maximum flow between source and destination vertex using Edmonds-Karp algorithm
