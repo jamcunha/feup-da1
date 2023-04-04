@@ -2,7 +2,6 @@
 
 #include <limits>
 #include <queue>
-#include <vector>
 
 Vertex* Graph::findVertex(const std::string& stationName) const {
     for (auto v: vertexSet) {
@@ -47,6 +46,7 @@ bool Graph::addEdge(const std::string& source, const std::string& dest, int weig
     if (v1 == nullptr || v2 == nullptr) {
         return false;
     }
+
     v1->addEdge(v2, weight, service);
     return true;
 }
@@ -63,6 +63,7 @@ bool Graph::addBidirectionalEdge(const std::string& source, const std::string& d
 
     e1->setReverse(e2);
     e2->setReverse(e1);
+
     return true;
 }
 

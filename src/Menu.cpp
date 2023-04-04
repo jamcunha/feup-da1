@@ -104,11 +104,12 @@ void Menu::maxTrainBetweenStations() {
 
 void Menu::init() {
     while (true) {
-        //utils::clearScreen();
+        utils::clearScreen();
         std::cout << "-----------------------------------------------\n";
         std::cout << "|        Welcome to the Railway Manager       |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 1. Max number of trains between 2 stations  |\n";
+        std::cout << "| 2. Max number of arriving at a station      |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 0. Exit                                     |\n";
         std::cout << "-----------------------------------------------\n";
@@ -123,7 +124,7 @@ void Menu::init() {
                 continue;
             }
 
-            if (opt[0] >= '0' && opt[0] <= '1' ) {
+            if (opt[0] >= '0' && opt[0] <= '2' ) {
                 break;
             }
 
@@ -135,7 +136,9 @@ void Menu::init() {
             case '0':
                 return;
             case '1':
-                //maxTrainBetweenStations();
+                maxTrainBetweenStations();
+                break;
+            case '2':
                 maxTrainArrivingStation();
                 break;
             default:
