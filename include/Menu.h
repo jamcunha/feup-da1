@@ -11,6 +11,7 @@ private:
 
     /* Basic Service Metrics */
     void maxTrainBetweenStations();
+    void maxTrainCapacity();
 
 public:
     Menu();
