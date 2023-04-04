@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <queue>
+#include <unordered_map>
 
 Vertex* Graph::findVertex(const std::string& stationName) const {
     for (auto v: vertexSet) {
@@ -100,18 +101,33 @@ int Graph::edmondsKarp(const std::string& source, const std::string& dest) const
     return (max_flow ? max_flow : -1);
 }
 
+// TODO: use vector instead of map for better time complexity (and maybe better performance)
 std::map<std::pair<std::string, std::string>, int> Graph::getMaxTrainCapacityPairs() const {
     std::map<std::pair<std::string, std::string>, int> max_pairs;
+    std::unordered_map<std::string, int> memo_max_flow; // Memoization of max flow between two stations
     int max_num_trains = 0;
+
     for (const auto &source: vertexSet) {
         for (const auto &dest: vertexSet) {
-            int num_trains = edmondsKarp(source->getStation().getName(), dest->getStation().getName());
+            std::string source_name = source->getStation().getName();
+            std::string dest_name = dest->getStation().getName();
+            int num_trains = -1;
+
+            if (memo_max_flow.find(source_name + dest_name) != memo_max_flow.end()) {
+                num_trains = memo_max_flow[source_name + dest_name];
+            } else {
+                num_trains = edmondsKarp(source_name, dest_name);
+
+                memo_max_flow[source_name + dest_name] = num_trains;
+                memo_max_flow[dest_name + source_name] = num_trains;
+            }
+
             if (num_trains > max_num_trains) {
                 max_pairs.clear();
-                max_pairs[std::make_pair(source->getStation().getName(), dest->getStation().getName())] = num_trains;
+                max_pairs[std::make_pair(source_name, dest_name)] = num_trains;
                 max_num_trains = num_trains;
-            } else if (num_trains == max_num_trains && max_pairs.find(std::make_pair(dest->getStation().getName(), source->getStation().getName())) == max_pairs.end()) {
-                max_pairs[std::make_pair(source->getStation().getName(), dest->getStation().getName())] = num_trains;
+            } else if (num_trains == max_num_trains) {
+                max_pairs[std::make_pair(source_name, dest_name)] = num_trains;
             }
         }
     }
