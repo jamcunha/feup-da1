@@ -15,6 +15,7 @@ private:
      */
     std::vector<Vertex *> vertexSet;
 
+
 public:
     /**
      * @brief Find a vertex in the graph with the given id, if it does not exists return nullptr
@@ -77,14 +78,22 @@ public:
     bool findAugmentingPath(Vertex *source, Vertex *dest);
 
     /**
-     * @brief Find the shortest path between source and destination vertex using Edmonds-Karp algorithm
+     * @brief Find the maximum flow between source and destination vertex using Edmonds-Karp algorithm
      * Used to calculate the maximum number of trains that can simultaneously travel between two stations
      * 
      * @param source Source vertex
      * @param dest Destination Vertex
      * @return int max_flow or -1 if input error
      */
-    int edmondsKarp(const std::string& source, const std::string& dest);
+    int edmondsKarp(const std::string& source, const std::string& dest) const;
+
+    /**
+     * @brief Get the pair of stations that require the maximum number of trains to travel between them
+     * 
+     * @return std::vector<std::pair<std::pair<std::string, std::string>, int>> Vector of pairs of stations and the maximum number
+     * of trains that can simultaneously travel between them
+     */
+    std::vector<std::pair<std::pair<std::string, std::string>, int>> getMaxTrainCapacityPairs() const;
 
     /**
      * @brief Get graph's number of vertexes

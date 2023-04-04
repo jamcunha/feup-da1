@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 #include <limits>
+#include <map>
+
 
 void Menu::readData() {
     std::ifstream station_input("../data/stations.csv");
@@ -108,6 +110,16 @@ void Menu::maxTrainBetweenStations() {
     utils::waitEnter();
 }
 
+void Menu::maxTrainCapacity() {
+    std::vector<std::pair<std::pair<std::string, std::string>, int>> max_trains = _graph.getMaxTrainCapacityPairs();
+
+    for (const auto& pair : max_trains) {
+        std::cout << "Max number of trains between " << pair.first.first << " and " << pair.first.second << ": " << pair.second << "\n";
+    }
+
+    utils::waitEnter();
+}
+
 void Menu::init() {
     while (true) {
         utils::clearScreen();
@@ -115,7 +127,8 @@ void Menu::init() {
         std::cout << "|        Welcome to the Railway Manager       |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 1. Max number of trains between 2 stations  |\n";
-        std::cout << "| 2. Max number of arriving at a station      |\n";
+        std::cout << "| 2. Max train capacity of the network        |\n";
+        std::cout << "| 3. Max number of arriving at a station      |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 0. Exit                                     |\n";
         std::cout << "-----------------------------------------------\n";
@@ -130,14 +143,14 @@ void Menu::init() {
                 continue;
             }
 
-            if (opt[0] >= '0' && opt[0] <= '2' ) {
+            if (opt[0] >= '0' && opt[0] <= '3' ) {
                 break;
             }
 
             std::cout << "Invalid option!\n";
         }
 
-        //utils::clearScreen();
+        utils::clearScreen();
         switch(opt[0]) {
             case '0':
                 return;
@@ -145,6 +158,9 @@ void Menu::init() {
                 maxTrainBetweenStations();
                 break;
             case '2':
+                maxTrainCapacity();
+                break;
+            case '3':
                 maxTrainArrivingStation();
                 break;
             default:

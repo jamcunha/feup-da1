@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <queue>
+#include <unordered_map>
 
 Vertex* Graph::findVertex(const std::string& stationName) const {
     for (auto v: vertexSet) {
@@ -71,7 +72,7 @@ bool Graph::addBidirectionalEdge(const std::string& source, const std::string& d
     return true;
 }
 
-int Graph::edmondsKarp(const std::string& source, const std::string& dest) {
+int Graph::edmondsKarp(const std::string& source, const std::string& dest) const {
     auto s = findVertex(source);
     auto t = findVertex(dest);
 
@@ -122,6 +123,39 @@ int Graph::edmondsKarp(const std::string& source, const std::string& dest) {
     return (max_flow ? max_flow : -1);
 }
 
+std::vector<std::pair<std::pair<std::string, std::string>, int>> Graph::getMaxTrainCapacityPairs() const {
+    std::vector<std::pair<std::pair<std::string, std::string>, int>> max_pairs;
+    std::unordered_map<std::string, int> memo_max_flow; // Memoization of max flow between two stations
+    int max_num_trains = 0;
+
+    for (const auto &source: vertexSet) {
+        for (const auto &dest: vertexSet) {
+            std::string source_name = source->getStation().getName();
+            std::string dest_name = dest->getStation().getName();
+            int num_trains = -1;
+
+            if (memo_max_flow.find(source_name + dest_name) != memo_max_flow.end()) {
+                num_trains = memo_max_flow[source_name + dest_name];
+            } else {
+                num_trains = edmondsKarp(source_name, dest_name);
+
+                memo_max_flow[source_name + dest_name] = num_trains;
+                memo_max_flow[dest_name + source_name] = num_trains;
+            }
+
+            if (num_trains > max_num_trains) {
+                max_pairs.clear();
+                max_pairs.push_back(std::make_pair(std::make_pair(source_name, dest_name), num_trains));
+                max_num_trains = num_trains;
+            } else if (num_trains == max_num_trains) {
+                max_pairs.push_back(std::make_pair(std::make_pair(source_name, dest_name), num_trains));
+            }
+        }
+    }
+
+    return max_pairs;
+}
+
 int Graph::getNumVertex() const {
     return this->vertexSet.size();
 }
@@ -132,7 +166,7 @@ std::vector<Vertex *> Graph::getVertexSet() const {
 
 /* Utils */
 
-bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) {
+bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) const {
     for (auto v: vertexSet) {
         v->setVisited(false);
     }
