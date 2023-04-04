@@ -62,42 +62,6 @@ Menu::Menu(): _graph(Graph()) {
     readData();
 }
 
-void Menu::maxTrainArrivingStation() {
-    std::string station_name;
-    std::cout << "Enter the station: ";
-    getline(std::cin, station_name);
-
-    Vertex* target = _graph.findVertex(station_name);
-    if (target == nullptr) {
-        std::cout << "Invalid station!\n";
-        utils::waitEnter();
-        return;
-    }
-
-    Station super = Station("super","","","","");
-    _graph.addVertex(super);
-
-    for (Vertex* v : _graph.getVertexSet()) {
-        if (!(v->getStation().getName() == station_name) && v->getAdj().size() == 1) {
-            for (auto v: _graph.getVertexSet()) {
-                for (auto e: v->getAdj()) {
-                    e->setFlow(0);
-                }
-            }
-
-            if (_graph.findAugmentingPath(v, target)) {
-                _graph.addEdge(super.getName(),v->getStation().getName(),std::numeric_limits<int>::max(),"");
-            }
-        }
-    }
-
-    int value = _graph.edmondsKarp(super.getName(),station_name);
-    _graph.removeVertex("super");
-    std::cout << "The maximum number of trains arriving at the same time at " << station_name<< " is : " << value << "\n";
-
-    utils::waitEnter();
-}
-
 void Menu::maxTrainBetweenStations() {
     std::string station_a, station_b;
 
@@ -138,6 +102,12 @@ void Menu::topKMunicipalitiesAndDistricts() {
     std::cin >> k;
     std::cin.ignore(); // ignore '\n' for waitEnter()
 
+    if (k < 0 || k > _graph.getNumVertex()) {
+        std::cout << "Input is either negative or bigger than the number of stations!\n";
+        utils::waitEnter();
+        return;
+    }
+
     utils::clearScreen();
 
     std::vector<std::string> top_k_municipalities;
@@ -154,6 +124,42 @@ void Menu::topKMunicipalitiesAndDistricts() {
     for (auto it = top_k_districts.begin(); it != top_k_districts.end(); it++) {
         std::cout << *it << "\n";
     }
+
+    utils::waitEnter();
+}
+
+void Menu::maxTrainArrivingStation() {
+    std::string station_name;
+    std::cout << "Enter the station: ";
+    getline(std::cin, station_name);
+
+    Vertex* target = _graph.findVertex(station_name);
+    if (target == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
+
+    Station super = Station("super","","","","");
+    _graph.addVertex(super);
+
+    for (Vertex* v : _graph.getVertexSet()) {
+        if (!(v->getStation().getName() == station_name) && v->getAdj().size() == 1) {
+            for (auto v: _graph.getVertexSet()) {
+                for (auto e: v->getAdj()) {
+                    e->setFlow(0);
+                }
+            }
+
+            if (_graph.findAugmentingPath(v, target)) {
+                _graph.addEdge(super.getName(),v->getStation().getName(),std::numeric_limits<int>::max(),"");
+            }
+        }
+    }
+
+    int value = _graph.edmondsKarp(super.getName(),station_name);
+    _graph.removeVertex("super");
+    std::cout << "The maximum number of trains arriving at the same time at " << station_name<< " is : " << value << "\n";
 
     utils::waitEnter();
 }

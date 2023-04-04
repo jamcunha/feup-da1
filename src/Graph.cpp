@@ -157,7 +157,6 @@ std::vector<std::pair<std::pair<std::string, std::string>, int>> Graph::getMaxTr
     return max_pairs;
 }
 
-// TODO: try to use a vector instead of a map and sort without using priority queue (analyse complexity)
 void Graph::findTopMunicipalitiesAndDistricts(
     int k,
     std::vector<std::string> &municipalities,
