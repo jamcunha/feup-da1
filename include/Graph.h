@@ -96,6 +96,21 @@ public:
     std::vector<std::pair<std::pair<std::string, std::string>, int>> getMaxTrainCapacityPairs() const;
 
     /**
+     * @brief Find the top k municipalities and districts with the most inportance in the network
+     * Using the flow centrality criteria, find the most important municipalities and districts in the network
+     * by calculating the sum of the maximum flow between all pairs of stations in the municipality/district
+     * 
+     * @param k Number of municipalities/districts to find
+     * @param municipalities Vector of pairs of municipality name and importance
+     * @param districts Vector of pairs of district name and importance
+     */
+    void findTopMunicipalitiesAndDistricts(
+        int k,
+        std::vector<std::string> &municipalities,
+        std::vector<std::string> &districts
+    ) const;
+
+    /**
      * @brief Get graph's number of vertexes
      * 
      * @return int Number of vertexes

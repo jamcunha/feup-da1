@@ -157,6 +157,83 @@ std::vector<std::pair<std::pair<std::string, std::string>, int>> Graph::getMaxTr
     return max_pairs;
 }
 
+void Graph::findTopMunicipalitiesAndDistricts(
+    int k,
+    std::vector<std::string> &municipalities,
+    std::vector<std::string> &districts
+) const {
+    std::unordered_map<std::string, int> municipalitiesFlow;
+    std::unordered_map<std::string, int> districtsFlow;
+    std::unordered_map<std::string, int> memo_max_flow; // Memoization of max flow between two stations
+
+    // Find the highest flow for each municipality and district
+    for (const auto &source: vertexSet) {
+        for (const auto &dest: vertexSet) {
+            std::string source_name = source->getStation().getName();
+            std::string dest_name = dest->getStation().getName();
+            int num_trains = -1;
+
+            if (memo_max_flow.find(source_name + dest_name) != memo_max_flow.end()) {
+                num_trains = memo_max_flow[source_name + dest_name];
+            } else {
+                num_trains = edmondsKarp(source_name, dest_name);
+
+                memo_max_flow[source_name + dest_name] = num_trains;
+                memo_max_flow[dest_name + source_name] = num_trains;
+            }
+
+            if (num_trains != -1) {
+                auto municipality = source->getStation().getMunicipality();
+                auto district = source->getStation().getDistrict();
+
+                if (municipalitiesFlow.find(municipality) == municipalitiesFlow.end()) {
+                    municipalitiesFlow[municipality] = 0;
+                }
+                if (districtsFlow.find(district) == districtsFlow.end()) {
+                    districtsFlow[district] = 0;
+                }
+                
+                municipalitiesFlow[municipality] += num_trains;
+                districtsFlow[district] += num_trains;
+            }
+        }
+    }
+
+    // Find the top k municipalities and districts
+    auto cmp = [](const std::pair<std::string, int> &a, const std::pair<std::string, int> &b) {
+        return a.second > b.second;
+    };
+    std::priority_queue<
+        std::pair<std::string, int>,
+        std::vector<std::pair<std::string, int>>,
+        decltype(cmp)
+    > pq(cmp);
+
+    for (const auto &municipality: municipalitiesFlow) {
+        pq.push(municipality);
+        if (pq.size() > k) {
+            pq.pop();
+        }
+    }
+
+    while (!pq.empty()) {
+        municipalities.insert(municipalities.begin(), pq.top().first);
+        pq.pop();
+    }
+
+    for (const auto &district: districtsFlow) {
+        pq.push(district);
+        if (pq.size() > k) {
+            pq.pop();
+        }
+    }
+
+    while (!pq.empty()) {
+        districts.insert(districts.begin(), pq.top().first);
+        pq.pop();
+    }
+}
+
 int Graph::getNumVertex() const {
     return this->vertexSet.size();
 }
