@@ -78,8 +78,16 @@ void Menu::maxTrainArrivingStation() {
     _graph.addVertex(super);
 
     for (Vertex* v : _graph.getVertexSet()) {
-        if (v->getAdj().size() == 1 && _graph.findAugmentingPath(v, target)){
-            _graph.addBidirectionalEdge(super.getName(),v->getStation().getName(),std::numeric_limits<int>::max(),"");
+        if (!(v->getStation().getName() == station_name) && v->getAdj().size() == 1) {
+            for (auto v: _graph.getVertexSet()) {
+                for (auto e: v->getAdj()) {
+                    e->setFlow(0);
+                }
+            }
+
+            if (_graph.findAugmentingPath(v, target)) {
+                _graph.addEdge(super.getName(),v->getStation().getName(),std::numeric_limits<int>::max(),"");
+            }
         }
     }
 

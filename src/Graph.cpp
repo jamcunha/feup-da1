@@ -32,6 +32,7 @@ bool Graph::removeVertex(const std::string& station_name) {
     for (auto e : v->getAdj()) {
         auto w = e->getDest();
         w->removeEdge(v->getStation());
+        v->removeEdge(w->getStation());
     }
     
     for (auto it = vertexSet.begin(); it != vertexSet.end(); it++) {
