@@ -13,7 +13,7 @@ private:
     void maxTrainBetweenStations();
     void maxTrainArrivingStation();
     void maxTrainCapacity();
-
+    void maxTrainWithCost();
 public:
     Menu();
 

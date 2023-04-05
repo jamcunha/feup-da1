@@ -47,6 +47,11 @@ private:
      */
     std::vector<Edge *> _incomming;
 
+    /**
+     * @brief Distance to the source
+     */
+     int _distance = 0;
+
 public:
     Vertex(const Station& station);
 
@@ -130,11 +135,21 @@ public:
     void setIndegree(unsigned int indegree);
 
     /**
+     * @brief Set source distance
+     *
+     * @param distance
+     */
+    void setDistance(int distance);
+
+    /**
      * @brief Set path to vertex
      * 
      * @param path 
      */
     void setPath(Edge* path);
+
+
+    bool operator()(const Vertex*, const Vertex*) const;
 
     /**
      * @brief Add an edge with vertex as origin
@@ -154,6 +169,8 @@ public:
      * @return false Vertex does not exist
      */
     bool removeEdge(const Station& destStation);
+
+    int getDistance() const;
 };
 
 /**

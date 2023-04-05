@@ -32,6 +32,9 @@ std::vector<Edge *> Vertex::getIncomming() const {
     return this->_incomming;
 }
 
+int Vertex::getDistance() const{
+    return this->_distance;
+}
 void Vertex::setStation(const Station& station) {
     this->_station = station;
 }
@@ -46,6 +49,10 @@ void Vertex::setProcessing(bool processing) {
 
 void Vertex::setIndegree(unsigned int indegree) {
     this->_indegree = indegree;
+}
+
+void Vertex::setDistance(int distance) {
+    this->_distance = distance;
 }
 
 void Vertex::setPath(Edge* path) {
@@ -85,6 +92,10 @@ bool Vertex::removeEdge(const Station& destStation) {
     return edgeRemoved;
 }
 
+bool Vertex::operator()(const Vertex * source, const Vertex * target) const {
+    return source->getDistance()>target->getDistance();
+}
+
 /*===== Edge =====*/
 
 Edge::Edge(Vertex* origin, Vertex* dest, int weight, const std::string& service)
@@ -121,3 +132,4 @@ void Edge::setReverse(Edge* reverse) {
 void Edge::setFlow(int flow) {
     this->_flow = flow;
 }
+

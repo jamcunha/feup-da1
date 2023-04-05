@@ -62,24 +62,42 @@ Menu::Menu(): _graph(Graph()) {
     readData();
 }
 
+void Menu::maxTrainWithCost() {
+    std::string station_a, station_b;
+
+    std::cout << "Station A: ";
+    getline(std::cin, station_a);
+
+    std::cout << "Station B: ";
+    getline(std::cin, station_b);
+
+    _graph.dijkstra(_graph.findVertex(station_b));
+
+
+}
+
+
 void Menu::maxTrainArrivingStation() {
     std::string station_name;
     std::cout << "Enter the station: ";
     getline(std::cin, station_name);
-
     Vertex* target = _graph.findVertex(station_name);
+
     if (target == nullptr) {
         std::cout << "Invalid station!\n";
         utils::waitEnter();
         return;
     }
-
+    for (auto v: _graph.getVertexSet()) {
+        for (auto e: v->getAdj()) {
+            e->setFlow(0);
+        }
+    }
     Station super = Station("super","","","","");
     _graph.addVertex(super);
-
     for (Vertex* v : _graph.getVertexSet()) {
-        if (v->getAdj().size() == 1 && _graph.findAugmentingPath(v, target)){
-            _graph.addBidirectionalEdge(super.getName(),v->getStation().getName(),std::numeric_limits<int>::max(),"");
+        if (!(v->getStation().getName()==station_name) && v->getAdj().size() == 1 && _graph.findAugmentingPath(v, target)){
+            _graph.addEdge(super.getName(),v->getStation().getName(),std::numeric_limits<int>::max(),"");
         }
     }
 

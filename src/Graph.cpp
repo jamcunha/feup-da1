@@ -31,7 +31,7 @@ bool Graph::removeVertex(const std::string& station_name) {
     
     for (auto e : v->getAdj()) {
         auto w = e->getDest();
-        w->removeEdge(v->getStation());
+        v->removeEdge(w->getStation());
     }
     
     for (auto it = vertexSet.begin(); it != vertexSet.end(); it++) {
@@ -198,5 +198,30 @@ bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) const {
     }
 
     return dest->isVisited();
+}
+
+void Graph::dijkstra (Vertex *source){
+    std::priority_queue<Vertex *, std::vector<Vertex*>, std::greater<Vertex*>> pq;
+    for (auto v : vertexSet){
+        v->setVisited(false);
+        v->setDistance(std::numeric_limits<int>::max());
+    }
+    source->setDistance(0);
+    pq.push(source);
+    while(!pq.empty()){
+        Vertex * u = pq.top();
+        pq.pop();
+
+        u->setVisited(true);
+
+        for (auto e : u->getAdj()){
+            Vertex * v = e->getDest();
+            int w = e->getWeight();
+            if (!v->isVisited() && u->getDistance() != std::numeric_limits<int>::max() && (u->getDistance() + w < v->getDistance())){
+                v->setDistance(u->getDistance()+w);
+                pq.push(v);
+            }
+        }
+    }
 }
 

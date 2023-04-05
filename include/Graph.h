@@ -108,6 +108,9 @@ public:
      * @return std::vector<Vertex *> vertexSet
      */
     std::vector<Vertex *> getVertexSet() const;
+
+    void dijkstra(Vertex *source);
+
 };
 
 #endif // FEUP_DA1_GRAPH_H
