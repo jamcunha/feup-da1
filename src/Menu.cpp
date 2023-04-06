@@ -158,6 +158,7 @@ void Menu::init() {
         std::cout << "| 1. Max number of trains between 2 stations  |\n";
         std::cout << "| 2. Max train capacity of the network        |\n";
         std::cout << "| 3. Max number of arriving at a station      |\n";
+        std::cout << "| 4. Minimum Cost between 2 stations          |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 0. Exit                                     |\n";
         std::cout << "-----------------------------------------------\n";
@@ -172,7 +173,7 @@ void Menu::init() {
                 continue;
             }
 
-            if (opt[0] >= '0' && opt[0] <= '3' ) {
+            if (opt[0] >= '0' && opt[0] <= '4' ) {
                 break;
             }
 
@@ -184,8 +185,7 @@ void Menu::init() {
             case '0':
                 return;
             case '1':
-                //maxTrainBetweenStations();
-                maxTrainWithCost();
+                maxTrainBetweenStations();
                 break;
             case '2':
                 maxTrainCapacity();
@@ -193,6 +193,8 @@ void Menu::init() {
             case '3':
                 maxTrainArrivingStation();
                 break;
+            case '4':
+                maxTrainWithCost();
             default:
                 break;
         }
