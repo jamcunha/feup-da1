@@ -28,7 +28,8 @@ void Menu::readData() {
         getline(ss, district, ',');
         getline(ss, municipality, ',');
         getline(ss, township, ',');
-        getline(ss, line, '\n');
+        getline(ss, line);
+        line.pop_back(); // remove '\r' or '\n'
 
         _graph.addVertex(Station(
             name,
@@ -47,7 +48,8 @@ void Menu::readData() {
         getline(ss, station_a, ',');
         getline(ss, station_b, ',');
         getline(ss, capacity_string, ',');
-        getline(ss, service, '\n');
+        getline(ss, service);
+        service.pop_back(); // remove '\r' or '\n'
 
         _graph.addBidirectionalEdge(
             station_a,
@@ -60,6 +62,60 @@ void Menu::readData() {
 
 Menu::Menu(): _graph(Graph()) {
     readData();
+}
+
+void Menu::showEdgeInfo(const Edge* edge) {
+    int col_size = 50;
+    
+    std::stringstream ss;
+    ss << edge->getOrigin()->getStation().getName() << " -> " << edge->getDest()->getStation().getName();
+    std::string temp = ss.str();
+    ss.str("");
+
+    std::string info_title = "|";
+
+    for (int i = 0; i < (col_size - temp.size()) / 2; i++) {
+        info_title += " ";
+    }
+
+    info_title += temp;
+
+    for (int i = 0; i < ((col_size - temp.size()) / 2) - 1; i++) {
+        info_title += " ";
+    }
+
+    info_title.length() == col_size ? info_title += " |" : info_title += "|";
+
+    ss << "Capacity: " << edge->getWeight();
+    temp = ss.str();
+    ss.str("");
+
+    std::string info_capacity = "| " + temp;
+
+    for (int i = 0; i < col_size - temp.size() - 3; i++) {
+        info_capacity += " ";
+    }
+
+    info_capacity += "|";
+
+    ss << "Service: " << edge->getService();
+    temp = ss.str();
+    ss.str("");
+
+    std::string info_service = "| " + temp;
+
+    for (int i = 0; i < col_size - temp.size() - 3; i++) {
+        info_service += " ";
+    }
+
+    info_service += "|";
+
+    for (int i = 0; i < col_size; i++) std::cout << '-'; std::cout << '\n';
+    std::cout << info_title << '\n';
+    for (int i = 0; i < col_size; i++) std::cout << '-'; std::cout << '\n';
+    std::cout << info_capacity << '\n';
+    std::cout << info_service << '\n';
+    for (int i = 0; i < col_size; i++) std::cout << '-'; std::cout << '\n';
 }
 
 void Menu::maxTrainBetweenStations(const Graph& g) {
@@ -176,18 +232,15 @@ Graph Menu::createReducedGraph() {
         remove_stations = true;
     }
 
-    std::vector<std::string> stations_to_remove;
     while (remove_stations) {
         std::cout << "Insert the name of the station you want to remove: ";
         std::string station_name;
         getline(std::cin, station_name);
 
-        if (_graph.findVertex(station_name) == nullptr) {
+        if (!reduced_graph.removeVertex(station_name)) {
             std::cout << "Invalid station!\n";
             utils::waitEnter();
         }
-
-        stations_to_remove.push_back(station_name);
 
         opt = "n";
         std::cout << "Want to remove another station? (y/N): ";
@@ -200,14 +253,91 @@ Graph Menu::createReducedGraph() {
         utils::clearScreen();
     }
 
-    for (const auto& station_name : stations_to_remove) {
-        reduced_graph.removeVertex(station_name);
+    opt = "n";
+    std::cout << "Do you want to remove a connection between 2 stations? (y/N): ";
+    getline(std::cin, opt);
+
+    bool remove_edges = false;
+    if (opt[0] == 'y' || opt[0] == 'Y') {
+        remove_edges = true;
     }
 
-    //? for now it only remove stations
-    // TODO Remove edges
+    while (remove_edges) {
+        std::cout << "Insert the name of the origin station: ";
+        std::string origin_name;
+        getline(std::cin, origin_name);
 
-    utils::waitEnter();
+        auto origin = reduced_graph.findVertex(origin_name);
+        if (origin == nullptr) {
+            std::cout << "Invalid station!\n";
+            utils::waitEnter();
+            
+            opt = "n";
+            std::cout << "Want to remove another connection? (y/N): ";
+            getline(std::cin, opt);
+
+            if (opt[0] == 'n' || opt[0] == 'N') {
+                break;
+            }
+
+            utils::clearScreen();
+            continue;
+        }
+
+        std::cout << "Insert the name of the destination station: ";
+        std::string dest_name;
+        getline(std::cin, dest_name);
+
+        auto dest = reduced_graph.findVertex(dest_name);
+        if (dest == nullptr) {
+            std::cout << "Invalid station!\n";
+            utils::waitEnter();
+            
+            opt = "n";
+            std::cout << "Want to remove another connection? (y/N): ";
+            getline(std::cin, opt);
+
+            if (opt[0] == 'n' || opt[0] == 'N') {
+                break;
+            }
+
+            utils::clearScreen();
+            continue;
+        }
+
+        utils::clearScreen();
+
+        bool found = false;
+        for (auto e : origin->getAdj()) {
+            if (e->getDest()->getStation().getName() == dest_name) {
+                showEdgeInfo(e);
+
+                std::cout << "\nConfirm? (y/N): ";
+
+                opt = "n";
+                getline(std::cin, opt);
+
+                if (opt[0] == 'y' || opt[0] == 'Y') {
+                    found = origin->removeEdge(dest->getStation());
+                }
+            }
+        }
+
+        if (!found) {
+            std::cout << "Invalid connection!\n\n";
+        }
+
+        opt = "n";
+        std::cout << "Want to remove another connection? (y/N): ";
+        getline(std::cin, opt);
+
+        if (opt[0] == 'n' || opt[0] == 'N') {
+            break;
+        }
+
+        utils::clearScreen();
+    }
+
     return reduced_graph;
 }
 
@@ -261,6 +391,7 @@ void Menu::init() {
                 maxTrainArrivingStation();
                 break;
             case '5':
+                // rework idea: create a section for the reduced graph and store it for both T4.1 and T4.2
                 maxTrainBetweenStations(createReducedGraph());
                 break;
             default:

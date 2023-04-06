@@ -9,6 +9,9 @@ private:
 
     void readData();
 
+    /* Show Vertex and Edge Info */
+    void showEdgeInfo(const Edge* edge);
+
     /* Basic Service Metrics */
     void maxTrainBetweenStations(const Graph& g);
     void maxTrainCapacity();
