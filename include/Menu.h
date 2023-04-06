@@ -10,10 +10,13 @@ private:
     void readData();
 
     /* Basic Service Metrics */
-    void maxTrainBetweenStations();
+    void maxTrainBetweenStations(const Graph& g);
     void maxTrainCapacity();
     void topKMunicipalitiesAndDistricts();
     void maxTrainArrivingStation();
+
+    /* Reliability and Sensitivity to line failures */
+    Graph createReducedGraph();
 
 public:
     Menu();

@@ -18,6 +18,18 @@ private:
 
 public:
     /**
+     * @brief Construct a new Graph object
+     */
+    Graph() {}
+
+    /**
+     * @brief Copy constructor for graph
+     * 
+     * @param g Graph to copy
+     */
+    Graph(const Graph& g);
+
+    /**
      * @brief Find a vertex in the graph with the given id, if it does not exists return nullptr
      * 
      * @param stationName Vertex stationName

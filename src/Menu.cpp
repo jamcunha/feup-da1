@@ -62,7 +62,7 @@ Menu::Menu(): _graph(Graph()) {
     readData();
 }
 
-void Menu::maxTrainBetweenStations() {
+void Menu::maxTrainBetweenStations(const Graph& g) {
     std::string station_a, station_b;
 
     std::cout << "Station A: ";
@@ -73,7 +73,7 @@ void Menu::maxTrainBetweenStations() {
 
 
 
-    int max_trains = _graph.edmondsKarp(station_a, station_b);
+    int max_trains = g.edmondsKarp(station_a, station_b);
 
     if (max_trains == -1) {
         std::cout << "Invalid stations!\n";
@@ -164,6 +164,53 @@ void Menu::maxTrainArrivingStation() {
     utils::waitEnter();
 }
 
+Graph Menu::createReducedGraph() {
+    Graph reduced_graph = Graph(_graph);
+    std::string opt = "n";
+
+    std::cout << "Do you want to remove a station? (y/N): ";
+    getline(std::cin, opt);
+
+    bool remove_stations = false;
+    if (opt[0] == 'y' || opt[0] == 'Y') {
+        remove_stations = true;
+    }
+
+    std::vector<std::string> stations_to_remove;
+    while (remove_stations) {
+        std::cout << "Insert the name of the station you want to remove: ";
+        std::string station_name;
+        getline(std::cin, station_name);
+
+        if (_graph.findVertex(station_name) == nullptr) {
+            std::cout << "Invalid station!\n";
+            utils::waitEnter();
+        }
+
+        stations_to_remove.push_back(station_name);
+
+        opt = "n";
+        std::cout << "Want to remove another station? (y/N): ";
+        getline(std::cin, opt);
+
+        if (opt[0] == 'n' || opt[0] == 'N') {
+            break;
+        }
+
+        utils::clearScreen();
+    }
+
+    for (const auto& station_name : stations_to_remove) {
+        reduced_graph.removeVertex(station_name);
+    }
+
+    //? for now it only remove stations
+    // TODO Remove edges
+
+    utils::waitEnter();
+    return reduced_graph;
+}
+
 void Menu::init() {
     while (true) {
         utils::clearScreen();
@@ -174,6 +221,8 @@ void Menu::init() {
         std::cout << "| 2. Max train capacity of the network        |\n";
         std::cout << "| 3. Top k municipalities and districts       |\n";
         std::cout << "| 4. Max number of arriving at a station      |\n";
+        std::cout << "|                                             |\n";
+        std::cout << "| 5. Max number of trains with line failures  |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 0. Exit                                     |\n";
         std::cout << "-----------------------------------------------\n";
@@ -188,7 +237,7 @@ void Menu::init() {
                 continue;
             }
 
-            if (opt[0] >= '0' && opt[0] <= '4' ) {
+            if (opt[0] >= '0' && opt[0] <= '5' ) {
                 break;
             }
 
@@ -200,7 +249,7 @@ void Menu::init() {
             case '0':
                 return;
             case '1':
-                maxTrainBetweenStations();
+                maxTrainBetweenStations(_graph);
                 break;
             case '2':
                 maxTrainCapacity();
@@ -210,6 +259,9 @@ void Menu::init() {
                 break;
             case '4':
                 maxTrainArrivingStation();
+                break;
+            case '5':
+                maxTrainBetweenStations(createReducedGraph());
                 break;
             default:
                 break;
