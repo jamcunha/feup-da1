@@ -3,6 +3,7 @@
 #include <limits>
 #include <queue>
 #include <unordered_map>
+#include <iostream>
 
 Vertex* Graph::findVertex(const std::string& stationName) const {
     for (auto v: vertexSet) {
@@ -170,7 +171,6 @@ bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) const {
     for (auto v: vertexSet) {
         v->setVisited(false);
     }
-
     source->setVisited(true);
     std::queue<Vertex *> q;
     q.push(source);
@@ -216,9 +216,10 @@ void Graph::dijkstra (Vertex *source){
 
         for (auto e : u->getAdj()){
             Vertex * v = e->getDest();
-            int w = e->getWeight();
+            int w = e->getService() == "STANDARD\r" ? 2 : 4;
             if (!v->isVisited() && u->getDistance() != std::numeric_limits<int>::max() && (u->getDistance() + w < v->getDistance())){
                 v->setDistance(u->getDistance()+w);
+                v->setPath(e);
                 pq.push(v);
             }
         }

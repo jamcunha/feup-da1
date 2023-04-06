@@ -71,9 +71,17 @@ void Menu::maxTrainWithCost() {
     std::cout << "Station B: ";
     getline(std::cin, station_b);
 
-    _graph.dijkstra(_graph.findVertex(station_b));
-
-
+    _graph.dijkstra(_graph.findVertex(station_a));
+    int flow = std::numeric_limits<int>::max(), cost;
+    Vertex* v = _graph.findVertex(station_b);
+    cost = v->getDistance();
+    while(v->getStation().getName()!=station_a){
+        if (flow > v->getPath()->getWeight()){
+            flow = v->getPath()->getWeight();
+        }
+        v = v->getPath()->getOrigin();
+    }
+    std::cout<<flow*cost;
 }
 
 
@@ -176,7 +184,8 @@ void Menu::init() {
             case '0':
                 return;
             case '1':
-                maxTrainBetweenStations();
+                //maxTrainBetweenStations();
+                maxTrainWithCost();
                 break;
             case '2':
                 maxTrainCapacity();
