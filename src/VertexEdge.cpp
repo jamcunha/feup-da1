@@ -92,9 +92,6 @@ bool Vertex::removeEdge(const Station& destStation) {
     return edgeRemoved;
 }
 
-bool Vertex::operator()(const Vertex * source, const Vertex * target) const {
-    return source->getDistance()>target->getDistance();
-}
 
 /*===== Edge =====*/
 

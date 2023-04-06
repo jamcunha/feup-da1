@@ -149,7 +149,6 @@ public:
     void setPath(Edge* path);
 
 
-    bool operator()(const Vertex*, const Vertex*) const;
 
     /**
      * @brief Add an edge with vertex as origin

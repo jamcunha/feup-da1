@@ -5,6 +5,13 @@
 #include <unordered_map>
 #include <iostream>
 
+struct Compare {
+    bool operator()(const Vertex* s, const Vertex* t) {
+        return s->getDistance() > t->getDistance();
+    }
+};
+
+
 Vertex* Graph::findVertex(const std::string& stationName) const {
     for (auto v: vertexSet) {
         if (v->getStation().getName() == stationName) {
@@ -201,7 +208,7 @@ bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) const {
 }
 
 void Graph::dijkstra (Vertex *source){
-    std::priority_queue<Vertex *, std::vector<Vertex*>, std::greater<Vertex*>> pq;
+    std::priority_queue<Vertex *, std::vector<Vertex*>, Compare > pq;
     for (auto v : vertexSet){
         v->setVisited(false);
         v->setDistance(std::numeric_limits<int>::max());
