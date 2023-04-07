@@ -157,16 +157,25 @@ void Menu::maxTrainBetweenStations(const Graph& g) {
 
     std::cout << "Station A: ";
     getline(std::cin, station_a);
-
+    Vertex* v = g.findVertex(station_a);
+    if (v == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
     std::cout << "Station B: ";
     getline(std::cin, station_b);
-
-
+    v = g.findVertex(station_b);
+    if (v == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
 
     int max_trains = g.edmondsKarp(station_a, station_b);
 
     if (max_trains == -1) {
-        std::cout << "Invalid stations!\n";
+        std::cout << "Impossible path!\n";
         utils::waitEnter();
         return;
     }
