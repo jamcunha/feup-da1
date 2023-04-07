@@ -67,13 +67,24 @@ void Menu::maxTrainWithCost() {
 
     std::cout << "Station A: ";
     getline(std::cin, station_a);
-
+    Vertex* v = _graph.findVertex(station_a);
+    if (v == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
     std::cout << "Station B: ";
     getline(std::cin, station_b);
+    v = _graph.findVertex(station_b);
+    if (v == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
 
     _graph.dijkstra(_graph.findVertex(station_a));
     int flow = std::numeric_limits<int>::max(), cost;
-    Vertex* v = _graph.findVertex(station_b);
+    v = _graph.findVertex(station_b);
     cost = v->getDistance();
     while(v->getStation().getName()!=station_a){
         if (flow > v->getPath()->getWeight()){
@@ -81,7 +92,7 @@ void Menu::maxTrainWithCost() {
         }
         v = v->getPath()->getOrigin();
     }
-    std::cout<<flow*cost;
+    std::cout<<"The minimum cost from "<<station_a<<" to "<<station_b<<" is "<<flow*cost<<"\n";
 }
 
 
