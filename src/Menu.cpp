@@ -424,8 +424,11 @@ void Menu::init() {
             case '4':
                 maxTrainArrivingStation();
                 break;
-           /* case '5':
-                maxTrainWi*/
+            case '5':
+                maxTrainWithCost();
+                break;
+            case '6':
+                maxTrainBetweenStations(createReducedGraph());
             default:
                 break;
         }
