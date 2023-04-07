@@ -123,6 +123,13 @@ public:
     ) const;
 
     /**
+     * @brief Find the minimum cost path from source to all other vertexes using Dijkstra algorithm.
+     * 
+     * @param source Source vertex
+     */
+    void dijkstra(Vertex *source);
+
+    /**
      * @brief Get graph's number of vertexes
      * 
      * @return int Number of vertexes

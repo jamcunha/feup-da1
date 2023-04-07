@@ -66,7 +66,7 @@ Menu::Menu(): _graph(Graph()) {
 
 void Menu::showEdgeInfo(const Edge* edge) {
     int col_size = 50;
-    
+
     std::stringstream ss;
     ss << edge->getOrigin()->getStation().getName() << " -> " << edge->getDest()->getStation().getName();
     std::string temp = ss.str();
@@ -123,16 +123,25 @@ void Menu::maxTrainBetweenStations(const Graph& g) {
 
     std::cout << "Station A: ";
     getline(std::cin, station_a);
-
+    Vertex* v = g.findVertex(station_a);
+    if (v == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
     std::cout << "Station B: ";
     getline(std::cin, station_b);
-
-
+    v = g.findVertex(station_b);
+    if (v == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
 
     int max_trains = g.edmondsKarp(station_a, station_b);
 
     if (max_trains == -1) {
-        std::cout << "Invalid stations!\n";
+        std::cout << "Impossible path!\n";
         utils::waitEnter();
         return;
     }
@@ -220,6 +229,45 @@ void Menu::maxTrainArrivingStation() {
     utils::waitEnter();
 }
 
+void Menu::maxTrainWithCost() {
+    std::string station_a, station_b;
+
+    std::cout << "Station A: ";
+    getline(std::cin, station_a);
+    Vertex* source = _graph.findVertex(station_a);
+    if (source == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
+
+    std::cout << "Station B: ";
+    getline(std::cin, station_b);
+    Vertex* dest = _graph.findVertex(station_b);
+    if (dest == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
+
+    utils::clearScreen();
+
+    _graph.dijkstra(source);
+    int flow = std::numeric_limits<int>::max();
+    int cost = dest->getDistance();
+
+    Vertex* temp = dest;
+    while (temp->getStation().getName() != station_a) {
+        if (flow > temp->getPath()->getWeight()) {
+            flow = temp->getPath()->getWeight();
+        }
+        temp = temp->getPath()->getOrigin();
+    }
+
+    std::cout << "The minimum cost from " << station_a << " to " << station_b << " is " << flow * cost << '\n';
+    utils::waitEnter();
+}
+
 Graph Menu::createReducedGraph() {
     Graph reduced_graph = Graph(_graph);
     std::string opt = "n";
@@ -271,7 +319,7 @@ Graph Menu::createReducedGraph() {
         if (origin == nullptr) {
             std::cout << "Invalid station!\n";
             utils::waitEnter();
-            
+
             opt = "n";
             std::cout << "Want to remove another connection? (y/N): ";
             getline(std::cin, opt);
@@ -292,7 +340,7 @@ Graph Menu::createReducedGraph() {
         if (dest == nullptr) {
             std::cout << "Invalid station!\n";
             utils::waitEnter();
-            
+
             opt = "n";
             std::cout << "Want to remove another connection? (y/N): ";
             getline(std::cin, opt);
@@ -351,8 +399,8 @@ void Menu::init() {
         std::cout << "| 2. Max train capacity of the network        |\n";
         std::cout << "| 3. Top k municipalities and districts       |\n";
         std::cout << "| 4. Max number of arriving at a station      |\n";
-        std::cout << "|                                             |\n";
-        std::cout << "| 5. Max number of trains with line failures  |\n";
+        std::cout << "| 5. Minimum Cost between 2 stations          |\n";
+        std::cout << "| 6. Max number of trains with line failures  |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 0. Exit                                     |\n";
         std::cout << "-----------------------------------------------\n";
@@ -367,7 +415,7 @@ void Menu::init() {
                 continue;
             }
 
-            if (opt[0] >= '0' && opt[0] <= '5' ) {
+            if (opt[0] >= '0' && opt[0] <= '6' ) {
                 break;
             }
 
@@ -391,7 +439,9 @@ void Menu::init() {
                 maxTrainArrivingStation();
                 break;
             case '5':
-                // rework idea: create a section for the reduced graph and store it for both T4.1 and T4.2
+                maxTrainWithCost();
+                break;
+            case '6':
                 maxTrainBetweenStations(createReducedGraph());
                 break;
             default:

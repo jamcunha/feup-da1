@@ -18,6 +18,9 @@ private:
     void topKMunicipalitiesAndDistricts();
     void maxTrainArrivingStation();
 
+    /* Operation Cost Optimization */
+    void maxTrainWithCost();
+
     /* Reliability and Sensitivity to line failures */
     Graph createReducedGraph();
 

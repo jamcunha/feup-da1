@@ -47,6 +47,11 @@ private:
      */
     std::vector<Edge *> _incomming;
 
+    /**
+     * @brief Cost from source to the vertex
+     */
+     int _distance = 0;
+
 public:
     Vertex(const Station& station);
 
@@ -86,6 +91,13 @@ public:
      * @return unsigned int indegree
      */
     unsigned int getIndegree() const;
+
+    /**
+     * @brief Get cost from source to the vertex
+     *
+     * @return Cost from source to the vertex
+     */
+    int getDistance() const;
 
     /**
      * @brief Get vertex path
@@ -128,6 +140,13 @@ public:
      * @param indegree 
      */
     void setIndegree(unsigned int indegree);
+
+    /**
+     * @brief Set cost from source to the vertex
+     *
+     * @param distance cost from source to the vertex
+     */
+    void setDistance(int distance);
 
     /**
      * @brief Set path to vertex
