@@ -195,20 +195,10 @@ void Menu::topKMunicipalitiesAndDistricts() {
 
 }
 
-int Menu::maxTrainArrivingStation(Graph& g, bool flag, std::string name) {
-    std::string station_name;
-    if (flag) {
-        std::cout << "Enter the station: ";
-        getline(std::cin, station_name);
-    }
-    else{
-        station_name=name;
-    }
+int Menu::maxTrainArrivingStationHelper(Graph& g, const std::string& station_name) {
     Vertex* target = g.findVertex(station_name);
     if (target == nullptr) {
-        //std::cout << "Invalid station!\n";
-        //utils::waitEnter();
-        return 0;
+        return -1;
     }
 
     Station super = Station("super","","","","");
@@ -228,13 +218,27 @@ int Menu::maxTrainArrivingStation(Graph& g, bool flag, std::string name) {
         }
     }
 
-    int value = g.edmondsKarp(super.getName(),station_name);
+    int val = g.edmondsKarp(super.getName(), station_name);
     g.removeVertex("super");
-    if (flag)
-        std::cout << "The maximum number of trains arriving at the same time at " << station_name<< " is : " << value << "\n";
+    return val;
+}
 
-    //utils::waitEnter();
-    return value;
+void Menu::maxTrainArrivingStation() {
+    std::string station_name;
+    std::cout << "Enter the station: ";
+    getline(std::cin, station_name);
+
+    int max_arriving = maxTrainArrivingStationHelper(_graph, station_name);
+
+    if (max_arriving == -1) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
+
+    std::cout << "The maximum number of trains arriving at the same time at " << station_name << " is : " << max_arriving << '\n';
+
+    utils::waitEnter();
 }
 
 void Menu::maxTrainWithCost() {
@@ -276,7 +280,7 @@ void Menu::maxTrainWithCost() {
     utils::waitEnter();
 }
 
-void Menu::mostAffectedStations(Graph g) {
+void Menu::mostAffectedStations(Graph& g) {
     int k;
 
     std::cout << "Insert the number of stations you want to be shown: ";
@@ -288,9 +292,15 @@ void Menu::mostAffectedStations(Graph g) {
         utils::waitEnter();
         return;
     }
-    std::vector<std::pair<std::string ,int>> difference;
-    for (Vertex* v : _graph.getVertexSet()){
-        difference.push_back(std::make_pair(v->getStation().getName(), maxTrainArrivingStation(_graph, false, v->getStation().getName())-maxTrainArrivingStation(g, false, v->getStation().getName())));
+
+    std::vector<std::pair<std::string ,int>> diff;
+    for (Vertex* v : _graph.getVertexSet()) {
+        int original_max = maxTrainArrivingStationHelper(_graph, v->getStation().getName());
+        original_max = original_max == -1 ? 0 : original_max; //? in case the station doesn't have flow
+        int new_max = maxTrainArrivingStationHelper(g, v->getStation().getName());
+        new_max = new_max == -1 ? 0 : new_max; //? in case the station is not in the new graph or doesn't have flow
+
+        diff.push_back(std::make_pair(v->getStation().getName(), original_max - new_max));
     }
 
     auto cmp = [](const std::pair<std::string, int> &a, const std::pair<std::string, int> &b) {
@@ -302,25 +312,28 @@ void Menu::mostAffectedStations(Graph g) {
             decltype(cmp)
     > pq(cmp);
 
-    for (const auto &stations: difference) {
+    for (const auto &stations: diff) {
         pq.push(stations);
         if (pq.size() > k) {
             pq.pop();
         }
     }
-    difference.clear();
+
+    diff.clear();
     while (!pq.empty()) {
-        difference.insert(difference.begin(), pq.top());
+        diff.insert(diff.begin(), pq.top());
         pq.pop();
     }
 
-    for (const auto &stations: difference) {
-        std::cout<<stations.first<<"--"<<stations.second<<"\n";
+    for (const auto &stations: diff) {
+        if (stations.second == 0) {
+            break;
+        }
+
+        std::cout << stations.first << " -> " << stations.second << '\n';
     }
 
-    utils::clearScreen();
-
-
+    utils::waitEnter();
 }
 
 Graph Menu::createReducedGraph() {
@@ -479,6 +492,7 @@ void Menu::init() {
         }
 
         utils::clearScreen();
+        Graph g; //? weird but necessary, for 6 and 7 should have a separate menu where that store the reduced graph
         switch(opt[0]) {
             case '0':
                 return;
@@ -492,7 +506,7 @@ void Menu::init() {
                 topKMunicipalitiesAndDistricts();
                 break;
             case '4':
-                maxTrainArrivingStation(_graph, true);
+                maxTrainArrivingStation();
                 break;
             case '5':
                 maxTrainWithCost();
@@ -501,7 +515,8 @@ void Menu::init() {
                 maxTrainBetweenStations(createReducedGraph());
                 break;
             case '7':
-                mostAffectedStations(createReducedGraph());
+                g = createReducedGraph();
+                mostAffectedStations(g);
                 break;
             default:
                 break;

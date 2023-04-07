@@ -16,14 +16,15 @@ private:
     void maxTrainBetweenStations(const Graph& g);
     void maxTrainCapacity();
     void topKMunicipalitiesAndDistricts();
-    int maxTrainArrivingStation(Graph& g, bool flag, std::string name = "");
-    void mostAffectedStations(Graph g);
+    int maxTrainArrivingStationHelper(Graph& g, const std::string& station_name);
+    void maxTrainArrivingStation();
 
     /* Operation Cost Optimization */
     void maxTrainWithCost();
 
     /* Reliability and Sensitivity to line failures */
     Graph createReducedGraph();
+    void mostAffectedStations(Graph& g);
 
 public:
     Menu();
