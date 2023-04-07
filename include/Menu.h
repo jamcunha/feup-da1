@@ -9,11 +9,19 @@ private:
 
     void readData();
 
+    /* Show Vertex and Edge Info */
+    void showEdgeInfo(const Edge* edge);
+
     /* Basic Service Metrics */
-    void maxTrainBetweenStations();
-    void maxTrainArrivingStation();
+    void maxTrainBetweenStations(const Graph& g);
     void maxTrainCapacity();
     void maxTrainWithCost();
+    void topKMunicipalitiesAndDistricts();
+    void maxTrainArrivingStation();
+
+    /* Reliability and Sensitivity to line failures */
+    Graph createReducedGraph();
+
 public:
     Menu();
 
