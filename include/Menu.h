@@ -16,7 +16,8 @@ private:
     void maxTrainBetweenStations(const Graph& g);
     void maxTrainCapacity();
     void topKMunicipalitiesAndDistricts();
-    void maxTrainArrivingStation();
+    int maxTrainArrivingStation(Graph& g, bool flag, std::string name = "");
+    void mostAffectedStations(Graph g);
 
     /* Operation Cost Optimization */
     void maxTrainWithCost();
@@ -28,6 +29,8 @@ public:
     Menu();
 
     void init();
+
+
 };
 
 #endif // FEUP_DA1_MENU_H
