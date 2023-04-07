@@ -123,6 +123,13 @@ public:
     ) const;
 
     /**
+     * @brief Find the minimum cost path from source to all other vertexes using Dijkstra algorithm.
+     * 
+     * @param source Source vertex
+     */
+    void dijkstra(Vertex *source);
+
+    /**
      * @brief Get graph's number of vertexes
      * 
      * @return int Number of vertexes
@@ -135,9 +142,6 @@ public:
      * @return std::vector<Vertex *> vertexSet
      */
     std::vector<Vertex *> getVertexSet() const;
-
-    void dijkstra(Vertex *source);
-
 };
 
 #endif // FEUP_DA1_GRAPH_H

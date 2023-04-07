@@ -48,7 +48,7 @@ private:
     std::vector<Edge *> _incomming;
 
     /**
-     * @brief Distance to the source
+     * @brief Cost from source to the vertex
      */
      int _distance = 0;
 
@@ -93,6 +93,13 @@ public:
     unsigned int getIndegree() const;
 
     /**
+     * @brief Get cost from source to the vertex
+     *
+     * @return Cost from source to the vertex
+     */
+    int getDistance() const;
+
+    /**
      * @brief Get vertex path
      * 
      * @return Edge* path
@@ -135,9 +142,9 @@ public:
     void setIndegree(unsigned int indegree);
 
     /**
-     * @brief Set source distance
+     * @brief Set cost from source to the vertex
      *
-     * @param distance
+     * @param distance cost from source to the vertex
      */
     void setDistance(int distance);
 
@@ -147,8 +154,6 @@ public:
      * @param path 
      */
     void setPath(Edge* path);
-
-
 
     /**
      * @brief Add an edge with vertex as origin
@@ -168,8 +173,6 @@ public:
      * @return false Vertex does not exist
      */
     bool removeEdge(const Station& destStation);
-
-    int getDistance() const;
 };
 
 /**

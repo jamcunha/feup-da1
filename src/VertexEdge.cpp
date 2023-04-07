@@ -35,6 +35,7 @@ std::vector<Edge *> Vertex::getIncomming() const {
 int Vertex::getDistance() const{
     return this->_distance;
 }
+
 void Vertex::setStation(const Station& station) {
     this->_station = station;
 }
@@ -91,7 +92,6 @@ bool Vertex::removeEdge(const Station& destStation) {
 
     return edgeRemoved;
 }
-
 
 /*===== Edge =====*/
 

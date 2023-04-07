@@ -64,40 +64,6 @@ Menu::Menu(): _graph(Graph()) {
     readData();
 }
 
-void Menu::maxTrainWithCost() {
-    std::string station_a, station_b;
-
-    std::cout << "Station A: ";
-    getline(std::cin, station_a);
-    Vertex* v = _graph.findVertex(station_a);
-    if (v == nullptr) {
-        std::cout << "Invalid station!\n";
-        utils::waitEnter();
-        return;
-    }
-    std::cout << "Station B: ";
-    getline(std::cin, station_b);
-    v = _graph.findVertex(station_b);
-    if (v == nullptr) {
-        std::cout << "Invalid station!\n";
-        utils::waitEnter();
-        return;
-    }
-
-    _graph.dijkstra(_graph.findVertex(station_a));
-    int flow = std::numeric_limits<int>::max(), cost;
-    v = _graph.findVertex(station_b);
-    cost = v->getDistance();
-    while(v->getStation().getName()!=station_a){
-        if (flow > v->getPath()->getWeight()){
-            flow = v->getPath()->getWeight();
-        }
-        v = v->getPath()->getOrigin();
-    }
-    std::cout<<"The minimum cost from "<<station_a<<" to "<<station_b<<" is "<<flow*cost<<"\n";
-}
-
-
 void Menu::showEdgeInfo(const Edge* edge) {
     int col_size = 50;
 
@@ -260,6 +226,45 @@ void Menu::maxTrainArrivingStation() {
     _graph.removeVertex("super");
     std::cout << "The maximum number of trains arriving at the same time at " << station_name<< " is : " << value << "\n";
 
+    utils::waitEnter();
+}
+
+void Menu::maxTrainWithCost() {
+    std::string station_a, station_b;
+
+    std::cout << "Station A: ";
+    getline(std::cin, station_a);
+    Vertex* source = _graph.findVertex(station_a);
+    if (source == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
+
+    std::cout << "Station B: ";
+    getline(std::cin, station_b);
+    Vertex* dest = _graph.findVertex(station_b);
+    if (dest == nullptr) {
+        std::cout << "Invalid station!\n";
+        utils::waitEnter();
+        return;
+    }
+
+    utils::clearScreen();
+
+    _graph.dijkstra(source);
+    int flow = std::numeric_limits<int>::max();
+    int cost = dest->getDistance();
+
+    Vertex* temp = dest;
+    while (temp->getStation().getName() != station_a) {
+        if (flow > temp->getPath()->getWeight()) {
+            flow = temp->getPath()->getWeight();
+        }
+        temp = temp->getPath()->getOrigin();
+    }
+
+    std::cout << "The minimum cost from " << station_a << " to " << station_b << " is " << flow * cost << '\n';
     utils::waitEnter();
 }
 
@@ -438,6 +443,7 @@ void Menu::init() {
                 break;
             case '6':
                 maxTrainBetweenStations(createReducedGraph());
+                break;
             default:
                 break;
         }

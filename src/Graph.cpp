@@ -5,13 +5,6 @@
 #include <unordered_map>
 #include <iostream>
 
-struct Compare {
-    bool operator()(const Vertex* s, const Vertex* t) {
-        return s->getDistance() > t->getDistance();
-    }
-};
-
-
 Graph::Graph(const Graph& g) {
     for (auto v : g.getVertexSet()) {
         addVertex(v->getStation());
@@ -257,6 +250,35 @@ void Graph::findTopMunicipalitiesAndDistricts(
     }
 }
 
+void Graph::dijkstra (Vertex *source) {
+    auto cmp = [](Vertex *a, Vertex *b) {
+        return a->getDistance() > b->getDistance();
+    };
+    std::priority_queue<Vertex *, std::vector<Vertex *>, decltype(cmp)> pq(cmp);
+
+    for (auto v : vertexSet) {
+        v->setVisited(false);
+        v->setDistance(std::numeric_limits<int>::max());
+    }
+
+    source->setDistance(0);
+    pq.push(source);
+    while (!pq.empty()) {
+        Vertex * u = pq.top(); pq.pop();
+        u->setVisited(true);
+
+        for (auto e : u->getAdj()) {
+            Vertex* v = e->getDest();
+            int w = e->getService() == "STANDARD" ? 2 : 4;
+            if (!v->isVisited() && u->getDistance() != std::numeric_limits<int>::max() && (u->getDistance() + w < v->getDistance())) {
+                v->setDistance(u->getDistance() + w);
+                v->setPath(e);
+                pq.push(v);
+            }
+        }
+    }
+}
+
 int Graph::getNumVertex() const {
     return this->vertexSet.size();
 }
@@ -299,30 +321,3 @@ bool Graph::findAugmentingPath(Vertex *source, Vertex *dest) const {
 
     return dest->isVisited();
 }
-
-void Graph::dijkstra (Vertex *source){
-    std::priority_queue<Vertex *, std::vector<Vertex*>, Compare > pq;
-    for (auto v : vertexSet){
-        v->setVisited(false);
-        v->setDistance(std::numeric_limits<int>::max());
-    }
-    source->setDistance(0);
-    pq.push(source);
-    while(!pq.empty()){
-        Vertex * u = pq.top();
-        pq.pop();
-
-        u->setVisited(true);
-
-        for (auto e : u->getAdj()){
-            Vertex * v = e->getDest();
-            int w = e->getService() == "STANDARD\r" ? 2 : 4;
-            if (!v->isVisited() && u->getDistance() != std::numeric_limits<int>::max() && (u->getDistance() + w < v->getDistance())){
-                v->setDistance(u->getDistance()+w);
-                v->setPath(e);
-                pq.push(v);
-            }
-        }
-    }
-}
-

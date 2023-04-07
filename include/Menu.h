@@ -15,9 +15,11 @@ private:
     /* Basic Service Metrics */
     void maxTrainBetweenStations(const Graph& g);
     void maxTrainCapacity();
-    void maxTrainWithCost();
     void topKMunicipalitiesAndDistricts();
     void maxTrainArrivingStation();
+
+    /* Operation Cost Optimization */
+    void maxTrainWithCost();
 
     /* Reliability and Sensitivity to line failures */
     Graph createReducedGraph();
