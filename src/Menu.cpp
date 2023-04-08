@@ -324,7 +324,7 @@ void Menu::mostAffectedStations(Graph& g) {
         diff.insert(diff.begin(), pq.top());
         pq.pop();
     }
-
+    std::cout << "Station -> Difference\n";
     for (const auto &stations: diff) {
         if (stations.second == 0) {
             break;
