@@ -68,21 +68,29 @@ private:
     /* Reliability and Sensitivity to line failures */
     /**
      * @brief Create a reduced graph of the original one
-     * @details Complexity: O()
+     * @details Complexity: O(VE²)
      * return Graph
      */
     Graph createReducedGraph();
 
     /**
      * @brief Calculate the stations that are most affected with the reduction
-     * @details Complexity: O()
+     * @details Complexity: O(V²E²))
      * @param g Graph that is used to calculate
      */
     void mostAffectedStations(Graph& g);
 
 public:
+    /**
+     * @brief Construct a new Menu object
+     * @details Complexity: O(n+m)
+     */
     Menu();
 
+    /**
+     * @brief Shows a friendly menu and read the option from the user
+     * @details Complexity: O(1)
+     */
     void init();
 
 
