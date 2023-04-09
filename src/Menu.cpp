@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <limits>
+#include <queue>
 
 
 void Menu::readData() {
@@ -191,6 +192,35 @@ void Menu::topKMunicipalitiesAndDistricts() {
     }
 
     utils::waitEnter();
+
+}
+
+int Menu::maxTrainArrivingStationHelper(Graph& g, const std::string& station_name) {
+    Vertex* target = g.findVertex(station_name);
+    if (target == nullptr) {
+        return -1;
+    }
+
+    Station super = Station("super","","","","");
+    g.addVertex(super);
+
+    for (Vertex* v : g.getVertexSet()) {
+        if (!(v->getStation().getName() == station_name) && v->getAdj().size() == 1) {
+            for (auto v: g.getVertexSet()) {
+                for (auto e: v->getAdj()) {
+                    e->setFlow(0);
+                }
+            }
+
+            if (g.findAugmentingPath(v, target)) {
+                g.addEdge(super.getName(),v->getStation().getName(),std::numeric_limits<int>::max(),"");
+            }
+        }
+    }
+
+    int val = g.edmondsKarp(super.getName(), station_name);
+    g.removeVertex("super");
+    return val;
 }
 
 void Menu::maxTrainArrivingStation() {
@@ -198,33 +228,15 @@ void Menu::maxTrainArrivingStation() {
     std::cout << "Enter the station: ";
     getline(std::cin, station_name);
 
-    Vertex* target = _graph.findVertex(station_name);
-    if (target == nullptr) {
+    int max_arriving = maxTrainArrivingStationHelper(_graph, station_name);
+
+    if (max_arriving == -1) {
         std::cout << "Invalid station!\n";
         utils::waitEnter();
         return;
     }
 
-    Station super = Station("super","","","","");
-    _graph.addVertex(super);
-
-    for (Vertex* v : _graph.getVertexSet()) {
-        if (!(v->getStation().getName() == station_name) && v->getAdj().size() == 1) {
-            for (auto v: _graph.getVertexSet()) {
-                for (auto e: v->getAdj()) {
-                    e->setFlow(0);
-                }
-            }
-
-            if (_graph.findAugmentingPath(v, target)) {
-                _graph.addEdge(super.getName(),v->getStation().getName(),std::numeric_limits<int>::max(),"");
-            }
-        }
-    }
-
-    int value = _graph.edmondsKarp(super.getName(),station_name);
-    _graph.removeVertex("super");
-    std::cout << "The maximum number of trains arriving at the same time at " << station_name<< " is : " << value << "\n";
+    std::cout << "The maximum number of trains arriving at the same time at " << station_name << " is : " << max_arriving << '\n';
 
     utils::waitEnter();
 }
@@ -265,6 +277,62 @@ void Menu::maxTrainWithCost() {
     }
 
     std::cout << "The minimum cost from " << station_a << " to " << station_b << " is " << flow * cost << '\n';
+    utils::waitEnter();
+}
+
+void Menu::mostAffectedStations(Graph& g) {
+    int k;
+
+    std::cout << "Insert the number of stations you want to be shown: ";
+    std::cin >> k;
+    std::cin.ignore(); // ignore '\n' for waitEnter()
+
+    if (k < 0 || k > g.getNumVertex()) {
+        std::cout << "Input is either negative or bigger than the number of stations!\n";
+        utils::waitEnter();
+        return;
+    }
+
+    std::vector<std::pair<std::string ,int>> diff;
+    for (Vertex* v : _graph.getVertexSet()) {
+        int original_max = maxTrainArrivingStationHelper(_graph, v->getStation().getName());
+        original_max = original_max == -1 ? 0 : original_max; //? in case the station doesn't have flow
+        int new_max = maxTrainArrivingStationHelper(g, v->getStation().getName());
+        new_max = new_max == -1 ? 0 : new_max; //? in case the station is not in the new graph or doesn't have flow
+
+        diff.push_back(std::make_pair(v->getStation().getName(), original_max - new_max));
+    }
+
+    auto cmp = [](const std::pair<std::string, int> &a, const std::pair<std::string, int> &b) {
+        return a.second > b.second;
+    };
+    std::priority_queue<
+            std::pair<std::string, int>,
+            std::vector<std::pair<std::string, int>>,
+            decltype(cmp)
+    > pq(cmp);
+
+    for (const auto &stations: diff) {
+        pq.push(stations);
+        if (pq.size() > k) {
+            pq.pop();
+        }
+    }
+
+    diff.clear();
+    while (!pq.empty()) {
+        diff.insert(diff.begin(), pq.top());
+        pq.pop();
+    }
+    std::cout << "Station -> Difference\n";
+    for (const auto &stations: diff) {
+        if (stations.second == 0) {
+            break;
+        }
+
+        std::cout << stations.first << " -> " << stations.second << '\n';
+    }
+
     utils::waitEnter();
 }
 
@@ -400,7 +468,7 @@ void Menu::init() {
         std::cout << "| 3. Top k municipalities and districts       |\n";
         std::cout << "| 4. Max number of arriving at a station      |\n";
         std::cout << "| 5. Minimum Cost between 2 stations          |\n";
-        std::cout << "| 6. Max number of trains with line failures  |\n";
+        std::cout << "| 6. Maintenance                              |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 0. Exit                                     |\n";
         std::cout << "-----------------------------------------------\n";
@@ -423,6 +491,7 @@ void Menu::init() {
         }
 
         utils::clearScreen();
+        Graph g; //? weird but necessary, for 6 and 7 should have a separate menu where that store the reduced graph
         switch(opt[0]) {
             case '0':
                 return;
@@ -442,10 +511,57 @@ void Menu::init() {
                 maxTrainWithCost();
                 break;
             case '6':
-                maxTrainBetweenStations(createReducedGraph());
+                submenu();
                 break;
             default:
                 break;
         }
     }
+}
+
+void Menu::submenu() {
+    Graph g = createReducedGraph();
+    while (true) {
+        utils::clearScreen();
+        std::cout << "-----------------------------------------------\n";
+        std::cout << "|                 Maintenance                 |\n";
+        std::cout << "|                                             |\n";
+        std::cout << "| 1. Max number of trains with line failures  |\n";
+        std::cout << "| 2. Most Affected Stations                   |\n";
+        std::cout << "|                                             |\n";
+        std::cout << "| 0. Exit                                     |\n";
+        std::cout << "-----------------------------------------------\n";
+
+        std::string opt;
+        while (true) {
+            std::cout << "\nOption: ";
+            getline(std::cin, opt);
+
+            if (opt.length() != 1) {
+                std::cout << "Invalid option!\n";
+                continue;
+            }
+
+            if (opt[0] >= '0' && opt[0] <= '2' ) {
+                break;
+            }
+
+            std::cout << "Invalid option!\n";
+        }
+
+        utils::clearScreen();
+        switch(opt[0]) {
+            case '0':
+                return;
+            case '1':
+                maxTrainBetweenStations(g);
+                break;
+            case '2':
+                mostAffectedStations(g);
+                break;
+            default:
+                break;
+        }
+    }
+
 }
