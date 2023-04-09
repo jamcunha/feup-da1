@@ -94,6 +94,7 @@ public:
     void init();
 
 
+    void submenu();
 };
 
 #endif // FEUP_DA1_MENU_H

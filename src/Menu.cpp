@@ -468,8 +468,7 @@ void Menu::init() {
         std::cout << "| 3. Top k municipalities and districts       |\n";
         std::cout << "| 4. Max number of arriving at a station      |\n";
         std::cout << "| 5. Minimum Cost between 2 stations          |\n";
-        std::cout << "| 6. Max number of trains with line failures  |\n";
-        std::cout << "| 7. Most Affected Stations                   |\n";
+        std::cout << "| 6. Maintenance                              |\n";
         std::cout << "|                                             |\n";
         std::cout << "| 0. Exit                                     |\n";
         std::cout << "-----------------------------------------------\n";
@@ -484,7 +483,7 @@ void Menu::init() {
                 continue;
             }
 
-            if (opt[0] >= '0' && opt[0] <= '7' ) {
+            if (opt[0] >= '0' && opt[0] <= '6' ) {
                 break;
             }
 
@@ -512,14 +511,57 @@ void Menu::init() {
                 maxTrainWithCost();
                 break;
             case '6':
-                maxTrainBetweenStations(createReducedGraph());
+                submenu();
                 break;
-            case '7':
-                g = createReducedGraph();
+            default:
+                break;
+        }
+    }
+}
+
+void Menu::submenu() {
+    Graph g = createReducedGraph();
+    while (true) {
+        utils::clearScreen();
+        std::cout << "-----------------------------------------------\n";
+        std::cout << "|                 Maintenance                 |\n";
+        std::cout << "|                                             |\n";
+        std::cout << "| 1. Max number of trains with line failures  |\n";
+        std::cout << "| 2. Most Affected Stations                   |\n";
+        std::cout << "|                                             |\n";
+        std::cout << "| 0. Exit                                     |\n";
+        std::cout << "-----------------------------------------------\n";
+
+        std::string opt;
+        while (true) {
+            std::cout << "\nOption: ";
+            getline(std::cin, opt);
+
+            if (opt.length() != 1) {
+                std::cout << "Invalid option!\n";
+                continue;
+            }
+
+            if (opt[0] >= '0' && opt[0] <= '2' ) {
+                break;
+            }
+
+            std::cout << "Invalid option!\n";
+        }
+
+        utils::clearScreen();
+        switch(opt[0]) {
+            case '0':
+                return;
+            case '1':
+                maxTrainBetweenStations(g);
+                break;
+            case '2':
                 mostAffectedStations(g);
                 break;
             default:
                 break;
         }
     }
+
 }
