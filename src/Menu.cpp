@@ -9,10 +9,13 @@
 #include <limits>
 #include <queue>
 
+// input files
+const std::string Menu::STATIONS_INPUT = "../data/stations.csv";
+const std::string Menu::NETWORK_INPUT = "../data/network.csv";
 
 void Menu::readData() {
-    std::ifstream station_input("../data/stations.csv");
-    std::ifstream network_input("../data/network.csv");
+    std::ifstream station_input(STATIONS_INPUT);
+    std::ifstream network_input(NETWORK_INPUT);
 
     std::string line;
 
@@ -30,7 +33,10 @@ void Menu::readData() {
         getline(ss, municipality, ',');
         getline(ss, township, ',');
         getline(ss, line);
-        line.pop_back(); // remove '\r' or '\n'
+
+        if (line.back() == '\r' || line.back() == '\n') {
+            line.pop_back(); // remove '\r' or '\n'
+        }
 
         _graph.addVertex(Station(
             name,
@@ -50,7 +56,10 @@ void Menu::readData() {
         getline(ss, station_b, ',');
         getline(ss, capacity_string, ',');
         getline(ss, service);
-        service.pop_back(); // remove '\r' or '\n'
+
+        if (service.back() == '\r' || service.back() == '\n') {
+            service.pop_back(); // remove '\r' or '\n'
+        }
 
         _graph.addBidirectionalEdge(
             station_a,
@@ -491,7 +500,6 @@ void Menu::init() {
         }
 
         utils::clearScreen();
-        Graph g; //? weird but necessary, for 6 and 7 should have a separate menu where that store the reduced graph
         switch(opt[0]) {
             case '0':
                 return;
@@ -511,7 +519,7 @@ void Menu::init() {
                 maxTrainWithCost();
                 break;
             case '6':
-                submenu();
+                reducedGraphMenu();
                 break;
             default:
                 break;
@@ -519,8 +527,9 @@ void Menu::init() {
     }
 }
 
-void Menu::submenu() {
+void Menu::reducedGraphMenu() {
     Graph g = createReducedGraph();
+
     while (true) {
         utils::clearScreen();
         std::cout << "-----------------------------------------------\n";

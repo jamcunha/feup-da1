@@ -15,7 +15,6 @@ private:
      */
     std::vector<Vertex *> vertexSet;
 
-
 public:
     /**
      * @brief Construct a new Graph object
@@ -31,6 +30,8 @@ public:
 
     /**
      * @brief Find a vertex in the graph with the given id, if it does not exists return nullptr
+     * 
+     * @details Time Complexity: O(|V|)
      * 
      * @param stationName Vertex stationName
      * @return Vertex* vertex
@@ -82,6 +83,8 @@ public:
     /**
      * @brief Find an augmenting path in the graph using BFS
      * 
+     * @details Time Complexity: O(|V|+|E|)
+     * 
      * @param source Source vertex
      * @param dest Destination Vertex
      * @return true Found augmenting path
@@ -93,14 +96,18 @@ public:
      * @brief Find the maximum flow between source and destination vertex using Edmonds-Karp algorithm
      * Used to calculate the maximum number of trains that can simultaneously travel between two stations
      * 
+     * @details Time Complexity: O(|V||E|²)
+     * 
      * @param source Source vertex
      * @param dest Destination Vertex
-     * @return int max_flow or -1 if input error
+     * @return int max_flow or -1 if error (input or flow network is not valid)
      */
     int edmondsKarp(const std::string& source, const std::string& dest) const;
 
     /**
      * @brief Get the pair of stations that require the maximum number of trains to travel between them
+     * 
+     * @details Time Complexity: O(|V|³|E|²)
      * 
      * @return std::vector<std::pair<std::pair<std::string, std::string>, int>> Vector of pairs of stations and the maximum number
      * of trains that can simultaneously travel between them
@@ -110,7 +117,9 @@ public:
     /**
      * @brief Find the top k municipalities and districts with the most inportance in the network
      * Using the flow centrality criteria, find the most important municipalities and districts in the network
-     * by calculating the sum of the maximum flow between all pairs of stations in the municipality/district
+     * by calculating the sum of the maximum flow between all pairs of stations in the municipality/district.
+     * 
+     * @details Time Complexity: O(|V|³|E|²)
      * 
      * @param k Number of municipalities/districts to find
      * @param municipalities Vector of pairs of municipality name and importance
@@ -124,6 +133,8 @@ public:
 
     /**
      * @brief Find the minimum cost path from source to all other vertexes using Dijkstra algorithm.
+     * 
+     * @details Time Complexity: O(|V|+|E|log(|V|))
      * 
      * @param source Source vertex
      */
