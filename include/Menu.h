@@ -38,15 +38,15 @@ private:
      * 
      * @param edge Edge that we want to see the info
      */
-    void showEdgeInfo(const Edge* edge);
+    void showEdgeInfo(const Edge* edge) const;
 
     /**
-     * @brief Show Vertex Info (without adjacent and incomming edges info)
+     * @brief Show Vertex Info (Station Info)
      * @details Time Complexity: O(1)
      * 
      * @param vertex Vertex that we want to see the info
      */
-    void showVertexInfo(const Vertex* vertex); // TODO: implement
+    void showVertexInfo(const Vertex* vertex) const;
 
     /* Basic Service Metrics */
     /**

@@ -74,7 +74,7 @@ Menu::Menu(): _graph(Graph()) {
     readData();
 }
 
-void Menu::showEdgeInfo(const Edge* edge) {
+void Menu::showEdgeInfo(const Edge* edge) const {
     int col_size = 50;
 
     std::stringstream ss;
@@ -84,13 +84,13 @@ void Menu::showEdgeInfo(const Edge* edge) {
 
     std::string info_title = "|";
 
-    for (int i = 0; i < (col_size - temp.size()) / 2; i++) {
+    for (int i = 0; i < (col_size - temp.length()) / 2; i++) {
         info_title += " ";
     }
 
     info_title += temp;
 
-    for (int i = 0; i < ((col_size - temp.size()) / 2) - 1; i++) {
+    for (int i = 0; i < ((col_size - temp.length()) / 2) - 1; i++) {
         info_title += " ";
     }
 
@@ -102,7 +102,7 @@ void Menu::showEdgeInfo(const Edge* edge) {
 
     std::string info_capacity = "| " + temp;
 
-    for (int i = 0; i < col_size - temp.size() - 3; i++) {
+    while (temp.length() < col_size - 3) {
         info_capacity += " ";
     }
 
@@ -114,7 +114,7 @@ void Menu::showEdgeInfo(const Edge* edge) {
 
     std::string info_service = "| " + temp;
 
-    for (int i = 0; i < col_size - temp.size() - 3; i++) {
+    while (temp.length() < col_size - 3) {
         info_service += " ";
     }
 
@@ -125,6 +125,74 @@ void Menu::showEdgeInfo(const Edge* edge) {
     for (int i = 0; i < col_size; i++) std::cout << '-'; std::cout << '\n';
     std::cout << info_capacity << '\n';
     std::cout << info_service << '\n';
+    for (int i = 0; i < col_size; i++) std::cout << '-'; std::cout << '\n';
+}
+
+void Menu::showVertexInfo(const Vertex* vertex) const {
+    int col_size = 50;
+
+    std::stringstream ss;
+    ss << "| Name: " << vertex->getStation().getName();
+    std::string temp = ss.str();
+    ss.str("");
+
+    while (temp.length() < col_size - 1) {
+        temp += " ";
+    }
+    temp += "|";
+
+    std::string info_name = temp;
+
+    ss << "| District: " << vertex->getStation().getDistrict();
+    temp = ss.str();
+    ss.str("");
+
+    while (temp.length() < col_size - 1) {
+        temp += " ";
+    }
+    temp += "|";
+
+    std::string info_district = temp;
+
+    ss << "| Municipality: " << vertex->getStation().getMunicipality();
+    temp = ss.str();
+    ss.str("");
+
+    while (temp.length() < col_size - 1) {
+        temp += " ";
+    }
+    temp += "|";
+
+    std::string info_municipality = temp;
+
+    ss << "| Township: " << vertex->getStation().getTownship();
+    temp = ss.str();
+    ss.str("");
+
+    while (temp.length() < col_size - 1) {
+        temp += " ";
+    }
+    temp += "|";
+
+    std::string info_township = temp;
+
+    ss << "| Line: " << vertex->getStation().getLine();
+    temp = ss.str();
+    ss.str("");
+
+    while (temp.length() < col_size - 1) {
+        temp += " ";
+    }
+    temp += "|";
+
+    std::string info_line = temp;
+
+    for (int i = 0; i < col_size; i++) std::cout << '-'; std::cout << '\n';
+    std::cout << info_name << '\n';
+    std::cout << info_district << '\n';
+    std::cout << info_municipality << '\n';
+    std::cout << info_township << '\n';
+    std::cout << info_line << '\n';
     for (int i = 0; i < col_size; i++) std::cout << '-'; std::cout << '\n';
 }
 
