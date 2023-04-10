@@ -102,7 +102,7 @@ void Menu::showEdgeInfo(const Edge* edge) const {
 
     std::string info_capacity = "| " + temp;
 
-    while (temp.length() < col_size - 3) {
+    while (info_capacity.length() < col_size - 1) {
         info_capacity += " ";
     }
 
@@ -114,7 +114,7 @@ void Menu::showEdgeInfo(const Edge* edge) const {
 
     std::string info_service = "| " + temp;
 
-    while (temp.length() < col_size - 3) {
+    while (info_service.length() < col_size - 1) {
         info_service += " ";
     }
 
@@ -197,34 +197,64 @@ void Menu::showVertexInfo(const Vertex* vertex) const {
 }
 
 void Menu::maxTrainBetweenStations(const Graph& g) {
-    std::string station_a, station_b;
+    std::string origin_station, dest_station;
 
-    std::cout << "Station A: ";
-    getline(std::cin, station_a);
-    Vertex* v = g.findVertex(station_a);
-    if (v == nullptr) {
-        std::cout << "Invalid station!\n";
-        utils::waitEnter();
-        return;
+    while (true) {
+        std::cout << "Origin Station: ";
+        getline(std::cin, origin_station);
+        Vertex* v = g.findVertex(origin_station);
+        if (v == nullptr) {
+            std::cout << "Invalid station!\n";
+            utils::waitEnter();
+            return;
+        }
+
+        utils::clearScreen();
+        showVertexInfo(v);
+
+        std::cout << "\nConfirm? (y/N): ";
+        std::string opt = "n";
+        getline(std::cin, opt);
+
+        if (opt[0] == 'y' || opt[0] == 'Y') {
+            break;
+        }
     }
-    std::cout << "Station B: ";
-    getline(std::cin, station_b);
-    v = g.findVertex(station_b);
-    if (v == nullptr) {
-        std::cout << "Invalid station!\n";
-        utils::waitEnter();
-        return;
+
+    utils::clearScreen();
+    
+    while (true) {
+        std::cout << "Destination Station: ";
+        getline(std::cin, dest_station);
+        Vertex* v = g.findVertex(dest_station);
+        if (v == nullptr) {
+            std::cout << "Invalid station!\n";
+            utils::waitEnter();
+            return;
+        }
+
+        utils::clearScreen();
+        showVertexInfo(v);
+
+        std::cout << "\nConfirm? (y/N): ";
+        std::string opt = "n";
+        getline(std::cin, opt);
+
+        if (opt[0] == 'y' || opt[0] == 'Y') {
+            break;
+        }
     }
 
-    int max_trains = g.edmondsKarp(station_a, station_b);
+    int max_trains = g.edmondsKarp(origin_station, dest_station);
 
+    utils::clearScreen();
     if (max_trains == -1) {
         std::cout << "Impossible path!\n";
         utils::waitEnter();
         return;
     }
 
-    std::cout << "Max number of trains between " << station_a << " and " << station_b << ": " << max_trains << "\n";
+    std::cout << "Max number of trains between " << origin_station << " and " << dest_station << ": " << max_trains << "\n";
     utils::waitEnter();
 }
 
@@ -258,18 +288,17 @@ void Menu::topKMunicipalitiesAndDistricts() {
 
     _graph.findTopMunicipalitiesAndDistricts(k, top_k_municipalities, top_k_districts);
 
-    std::cout << "Top " << k << " municipalities:\n";
+    std::cout << "Top " << k << " municipalities:\n\n";
     for (auto it = top_k_municipalities.begin(); it != top_k_municipalities.end(); it++) {
         std::cout << *it << "\n";
     }
 
-    std::cout << "\nTop " << k << " districts:\n";
+    std::cout << "\nTop " << k << " districts:\n\n";
     for (auto it = top_k_districts.begin(); it != top_k_districts.end(); it++) {
         std::cout << *it << "\n";
     }
 
     utils::waitEnter();
-
 }
 
 int Menu::maxTrainArrivingStationHelper(Graph& g, const std::string& station_name) {
@@ -302,11 +331,31 @@ int Menu::maxTrainArrivingStationHelper(Graph& g, const std::string& station_nam
 
 void Menu::maxTrainArrivingStation() {
     std::string station_name;
-    std::cout << "Enter the station: ";
-    getline(std::cin, station_name);
+    while (true) {
+        std::cout << "Enter the station name: ";
+        getline(std::cin, station_name);
+        Vertex* v = _graph.findVertex(station_name);
+        if (v == nullptr) {
+            std::cout << "Invalid station!\n";
+            utils::waitEnter();
+            return;
+        }
+
+        utils::clearScreen();
+        showVertexInfo(v);
+
+        std::cout << "\nConfirm? (y/N): ";
+        std::string opt = "n";
+        getline(std::cin, opt);
+
+        if (opt[0] == 'y' || opt[0] == 'Y') {
+            break;
+        }
+    }
 
     int max_arriving = maxTrainArrivingStationHelper(_graph, station_name);
 
+    utils::clearScreen();
     if (max_arriving == -1) {
         std::cout << "Invalid station!\n";
         utils::waitEnter();
@@ -319,41 +368,69 @@ void Menu::maxTrainArrivingStation() {
 }
 
 void Menu::maxTrainWithCost() {
-    std::string station_a, station_b;
+    std::string origin_station, dest_station;
+    Vertex* source; Vertex* dest;
 
-    std::cout << "Station A: ";
-    getline(std::cin, station_a);
-    Vertex* source = _graph.findVertex(station_a);
-    if (source == nullptr) {
-        std::cout << "Invalid station!\n";
-        utils::waitEnter();
-        return;
-    }
+    while (true) {
+        std::cout << "Origin Station: ";
+        getline(std::cin, origin_station);
+        source = _graph.findVertex(origin_station);
+        if (source == nullptr) {
+            std::cout << "Invalid station!\n";
+            utils::waitEnter();
+            return;
+        }
 
-    std::cout << "Station B: ";
-    getline(std::cin, station_b);
-    Vertex* dest = _graph.findVertex(station_b);
-    if (dest == nullptr) {
-        std::cout << "Invalid station!\n";
-        utils::waitEnter();
-        return;
+        utils::clearScreen();
+        showVertexInfo(source);
+
+        std::cout << "\nConfirm? (y/N): ";
+        std::string opt = "n";
+        getline(std::cin, opt);
+
+        if (opt[0] == 'y' || opt[0] == 'Y') {
+            break;
+        }
     }
 
     utils::clearScreen();
+    
+    while (true) {
+        std::cout << "Destination Station: ";
+        getline(std::cin, dest_station);
+        dest = _graph.findVertex(dest_station);
+        if (dest == nullptr) {
+            std::cout << "Invalid station!\n";
+            utils::waitEnter();
+            return;
+        }
+
+        utils::clearScreen();
+        showVertexInfo(dest);
+
+        std::cout << "\nConfirm? (y/N): ";
+        std::string opt = "n";
+        getline(std::cin, opt);
+
+        if (opt[0] == 'y' || opt[0] == 'Y') {
+            break;
+        }
+    }
 
     _graph.dijkstra(source);
     int flow = std::numeric_limits<int>::max();
     int cost = dest->getDistance();
 
     Vertex* temp = dest;
-    while (temp->getStation().getName() != station_a) {
+    while (temp->getStation().getName() != origin_station) {
         if (flow > temp->getPath()->getWeight()) {
             flow = temp->getPath()->getWeight();
         }
         temp = temp->getPath()->getOrigin();
     }
 
-    std::cout << "The minimum cost from " << station_a << " to " << station_b << " is " << flow * cost << '\n';
+    utils::clearScreen();
+    std::cout << "The minimum cost from " << origin_station << " to " << dest_station << " is " << flow * cost << '\n';
     utils::waitEnter();
 }
 
@@ -401,7 +478,9 @@ void Menu::mostAffectedStations(Graph& g) {
         diff.insert(diff.begin(), pq.top());
         pq.pop();
     }
-    std::cout << "Station -> Difference\n";
+
+    utils::clearScreen();
+    std::cout << "Station -> Difference\n\n";
     for (const auto &stations: diff) {
         if (stations.second == 0) {
             break;
@@ -426,9 +505,27 @@ Graph Menu::createReducedGraph() {
     }
 
     while (remove_stations) {
-        std::cout << "Insert the name of the station you want to remove: ";
         std::string station_name;
-        getline(std::cin, station_name);
+        while (true) {
+            utils::clearScreen();
+            std::cout << "Insert the name of the station you want to remove: ";
+            getline(std::cin, station_name);
+            Vertex* v = _graph.findVertex(station_name);
+            if (v == nullptr) {
+                break;
+            }
+
+            utils::clearScreen();
+            showVertexInfo(v);
+
+            std::cout << "\nConfirm? (y/N): ";
+            opt = "n";
+            getline(std::cin, opt);
+
+            if (opt[0] == 'y' || opt[0] == 'Y') {
+                break;
+            }
+        }
 
         if (!reduced_graph.removeVertex(station_name)) {
             std::cout << "Invalid station!\n";
@@ -436,6 +533,7 @@ Graph Menu::createReducedGraph() {
         }
 
         opt = "n";
+        utils::clearScreen();
         std::cout << "Want to remove another station? (y/N): ";
         getline(std::cin, opt);
 
@@ -447,6 +545,7 @@ Graph Menu::createReducedGraph() {
     }
 
     opt = "n";
+    utils::clearScreen();
     std::cout << "Do you want to remove a connection between 2 stations? (y/N): ";
     getline(std::cin, opt);
 
@@ -456,16 +555,35 @@ Graph Menu::createReducedGraph() {
     }
 
     while (remove_edges) {
-        std::cout << "Insert the name of the origin station: ";
-        std::string origin_name;
-        getline(std::cin, origin_name);
+        std::string origin_name; Vertex* origin;
+        while (true) {
+            utils::clearScreen();
+            std::cout << "Insert the name of the origin station: ";
+            getline(std::cin, origin_name);
+            origin = _graph.findVertex(origin_name);
+            if (origin == nullptr) {
+                break;
+            }
 
-        auto origin = reduced_graph.findVertex(origin_name);
+            utils::clearScreen();
+            showVertexInfo(origin);
+
+            std::cout << "\nConfirm? (y/N): ";
+            opt = "n";
+            getline(std::cin, opt);
+
+            if (opt[0] == 'y' || opt[0] == 'Y') {
+                break;
+            }
+        }
+
+        origin = reduced_graph.findVertex(origin_name);
         if (origin == nullptr) {
             std::cout << "Invalid station!\n";
             utils::waitEnter();
 
             opt = "n";
+            utils::clearScreen();
             std::cout << "Want to remove another connection? (y/N): ";
             getline(std::cin, opt);
 
@@ -477,16 +595,35 @@ Graph Menu::createReducedGraph() {
             continue;
         }
 
-        std::cout << "Insert the name of the destination station: ";
-        std::string dest_name;
-        getline(std::cin, dest_name);
+        std::string dest_name; Vertex* dest;
+        while (true) {
+            utils::clearScreen();
+            std::cout << "Insert the name of the destination station: ";
+            getline(std::cin, dest_name);
+            dest = _graph.findVertex(dest_name);
+            if (dest == nullptr) {
+                break;
+            }
 
-        auto dest = reduced_graph.findVertex(dest_name);
+            utils::clearScreen();
+            showVertexInfo(dest);
+
+            std::cout << "\nConfirm? (y/N): ";
+            opt = "n";
+            getline(std::cin, opt);
+
+            if (opt[0] == 'y' || opt[0] == 'Y') {
+                break;
+            }
+        }
+
+        dest = reduced_graph.findVertex(dest_name);
         if (dest == nullptr) {
             std::cout << "Invalid station!\n";
             utils::waitEnter();
 
             opt = "n";
+            utils::clearScreen();
             std::cout << "Want to remove another connection? (y/N): ";
             getline(std::cin, opt);
 
@@ -521,6 +658,7 @@ Graph Menu::createReducedGraph() {
         }
 
         opt = "n";
+        utils::clearScreen();
         std::cout << "Want to remove another connection? (y/N): ";
         getline(std::cin, opt);
 
@@ -596,7 +734,7 @@ void Menu::init() {
 }
 
 void Menu::reducedGraphMenu() {
-    Graph g = createReducedGraph();
+    Graph reduced_graph = createReducedGraph();
 
     while (true) {
         utils::clearScreen();
@@ -606,7 +744,7 @@ void Menu::reducedGraphMenu() {
         std::cout << "| 1. Max number of trains with line failures  |\n";
         std::cout << "| 2. Most Affected Stations                   |\n";
         std::cout << "|                                             |\n";
-        std::cout << "| 0. Exit                                     |\n";
+        std::cout << "| 0. Return to Main Menu                      |\n";
         std::cout << "-----------------------------------------------\n";
 
         std::string opt;
@@ -631,14 +769,13 @@ void Menu::reducedGraphMenu() {
             case '0':
                 return;
             case '1':
-                maxTrainBetweenStations(g);
+                maxTrainBetweenStations(reduced_graph);
                 break;
             case '2':
-                mostAffectedStations(g);
+                mostAffectedStations(reduced_graph);
                 break;
             default:
                 break;
         }
     }
-
 }
